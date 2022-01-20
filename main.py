@@ -51,37 +51,39 @@ combined=np.vstack((totalenergy,totalscatt)).T
 combined=combined[combined[:,0].argsort()]
 
 
-# def x(Eigenvectors, Jx, Jy, Jz, E):
-#     S=1/2;L=3;J=7/2;
-#     gj=(J*(J+1) - S*(S+1) + L*(L+1))/(2*J*(J+1)) +(J*(J+1) + S*(S+1) - L*(L+1))/(J*(J+1))
-#     Na=6.0221409e23
-#     muB=9.274009994e-21
-#     kb=1.38064852e-16
-#     C=0.92*(gj**2)*(Na)*(muB)**2/kb #X*Na* mu_b^2*X/kb in cgs unit
-#     Z=0
-#     T=np.linspace(1, 320,320)
-#     for n in range(0,6):
-#         Z=Z+np.exp(-E[n]/T)
-#     X=0
-#     for n in range(0,6):
-#         X=X+(np.absolute(Eigenvectors[n,:]*Jx*Eigenvectors[n,:].H).item())**2*(np.exp(-E[n]/T))/T
-#         for m in range(0,6):
-#             if np.abs(E[m]-E[n])<1e-5: continue
-#             else: X = X+ (np.absolute(Eigenvectors[m,:]*Jx*Eigenvectors[n,:].H).item())**2*(np.exp(-E[n]/T)-np.exp(-E[m]/T))/(E[m]-E[n])
-#     for n in range(0,6):
-#         X=X+(np.absolute(Eigenvectors[n,:]*Jy*Eigenvectors[n,:].H).item())**2*(np.exp(-E[n]/T))/T
-#         for m in range(0,6):
-#             if np.abs(E[m]-E[n])<1e-5: continue
-#             else: X = X+ (np.absolute(Eigenvectors[m,:]*Jy*Eigenvectors[n,:].H).item())**2*(np.exp(-E[n]/T)-np.exp(-E[m]/T))/(E[m]-E[n])
-#     for n in range(0,6):
-#         X=X+(np.absolute(Eigenvectors[n,:]*Jz*Eigenvectors[n,:].H).item())**2*(np.exp(-E[n]/T))/T
-#         for m in range(0,6):
-#             if np.abs(E[m]-E[n])<1e-5: continue
-#             else: X = X+ ((np.absolute(Eigenvectors[m,:]*Jz*Eigenvectors[n,:].H).item())**2)*(np.exp(-E[n]/T)-np.exp(-E[m]/T))/(E[m]-E[n])
-#     X=C*X/(3*Z)
-#     return T,X
+def x(Eigenvectors, Jx, Jy, Jz, E):
+     S=1/2;L=3;J=7/2;
+     gj=(J*(J+1) - S*(S+1) + L*(L+1))/(2*J*(J+1)) +(J*(J+1) + S*(S+1) - L*(L+1))/(J*(J+1))
+     Na=6.0221409e23
+     muB=9.274009994e-21
+     kb=1.38064852e-16
+     C=0.92*(gj**2)*(Na)*(muB)**2/kb #X*Na* mu_b^2*X/kb in cgs unit
+     Z=0
+     T=np.linspace(1, 320,320)
+     for n in range(0,6):
+         Z=Z+np.exp(-E[n]/T)
+     X=0
+     for n in range(0,6):
+         X=X+(np.absolute(Eigenvectors[n,:]*Jx*Eigenvectors[n,:].H).item())**2*(np.exp(-E[n]/T))/T
+         for m in range(0,6):
+             if np.abs(E[m]-E[n])<1e-5: continue
+             else: X = X+ (np.absolute(Eigenvectors[m,:]*Jx*Eigenvectors[n,:].H).item())**2*(np.exp(-E[n]/T)-np.exp(-E[m]/T))/(E[m]-E[n])
+     for n in range(0,6):
+         X=X+(np.absolute(Eigenvectors[n,:]*Jy*Eigenvectors[n,:].H).item())**2*(np.exp(-E[n]/T))/T
+         for m in range(0,6):
+             if np.abs(E[m]-E[n])<1e-5: continue
+             else: X = X+ (np.absolute(Eigenvectors[m,:]*Jy*Eigenvectors[n,:].H).item())**2*(np.exp(-E[n]/T)-np.exp(-E[m]/T))/(E[m]-E[n])
+     for n in range(0,6):
+         X=X+(np.absolute(Eigenvectors[n,:]*Jz*Eigenvectors[n,:].H).item())**2*(np.exp(-E[n]/T))/T
+         for m in range(0,6):
+             if np.abs(E[m]-E[n])<1e-5: continue
+             else: X = X+ ((np.absolute(Eigenvectors[m,:]*Jz*Eigenvectors[n,:].H).item())**2)*(np.exp(-E[n]/T)-np.exp(-E[m]/T))/(E[m]-E[n])
+     X=C*X/(3*Z)
+     return T,X
 
-# T,X=x(Eigenvectors,sol[3], sol[4], sol[5], sol[1]/0.0862)
-# plt.plot(T,1/X,'-')
-# plt.xlim(0,300)
-# plt.ylim(0, 400)
+T,X1=x(Eigenvectors1,solyb1[3], solyb1[4], solyb1[5], solyb1[1]/0.0862)
+T,X2=x(Eigenvectors2,solyb2[3], solyb2[4], solyb2[5], solyb2[1]/0.0862)
+X=X1+X2
+plt.plot(T,1/X,'-')
+plt.xlim(0,300)
+plt.ylim(0, 400)
