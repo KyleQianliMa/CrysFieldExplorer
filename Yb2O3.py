@@ -27,7 +27,7 @@ def H1(D20,D40,D43,D4n3,D60,D63,D6n3,D66,D6n6):
  return Energy, Eigenvectors
 
 def H2(D20,D22,D2n2,D40,D42,D4n2,D44,D4n4,D60,D62,D6n2,D64,D6n4,D66,D6n6):
- H=D20*O20+D22*O22+D2n2*O2n2+D40*O40+D42*O42+D4n2*O4n2+D44*O44+D4n4*O4n4+D60*O60+D62*O62+D6n2+O6n2+D64*O64+D6n4*O6n4+D66*O66+D6n6*O6n6
+ H=D20*O20+D22*O22+D2n2*O2n2+D40*O40+D42*O42+D4n2*O4n2+D44*O44+D4n4*O4n4+D60*O60+D62*O62+D6n2*O6n2+D64*O64+D6n4*O6n4+D66*O66+D6n6*O6n6
  Eigenvalues, Eigenvectors = (np.linalg.eigh(H))
  Energy=Eigenvalues-Eigenvalues[0]
  return Energy, Eigenvectors
