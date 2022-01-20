@@ -1,6 +1,8 @@
 import Yb2O3 as kp
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
+suscep=pd.read_excel('T and X.xlsx')
 # B20  = 1.135
 # B40  = -0.0615
 # B43  = 0.315
@@ -8,32 +10,32 @@ import matplotlib.pyplot as plt
 # B63  = 0.037
 # B66 = 0.005
 #Yb1
-B20 = 1.135
-B40 = -0.0615
-B43 = 0.315
-B4n3=0
-B60 = 0.0011
-B63 = 0.037
-B6n3=0
-B66 = 0.005
-B6n6 = 0.005
+B20 = -3.9567
+B40 = -0.01744
+B43 = -0.91424
+B4n3= 0.053957
+B60 = 0.00029909
+B63 = -0.00274532
+B6n3= 0.00016203
+B66 = 0.00323264
+B6n6 = -0.00038291
 
 #Yb2
-BB20 = 1.135
-BB22 = 0
-BB2n2 = 0
-BB40 = -0.0615
-BB42 = 0
-BB4n2 = 0
-BB44 = 0
-BB4n4 = 0
-BB60 = 0.0011
-BB62 = 0
-BB6n2 = 0
-BB64 = 0
-BB6n4 =0
-BB66 = 0.005
-BB6n6 = 0
+BB20 = -0.38686914
+BB22 = 0.66168976
+BB2n2 = 5.12164656
+BB40 = 0.02568425
+BB42 = -0.00622523
+BB4n2 = -0.14341997
+BB44 = 0.16143046
+BB4n4 = 0.01897491
+BB60 = 0.00012865
+BB62 = 6.98e-05
+BB6n2 = -0.00049725
+BB64 = -0.00338849
+BB6n4 =-3.037e-05
+BB66 = -0.0001437
+BB6n6 = -3.96e-06
 
 solyb1=kp.solveryb1(B20,B40,B43,B4n3,B60,B63,B6n3,B66,B6n6)
 CalcEnergy1=[solyb1[1][2].round(2),solyb1[1][4].round(2), solyb1[1][6]]
