@@ -54,22 +54,26 @@ jminussquare = jminus*jminus
 O20 = 3*(jz**2) - jsquare
 O22 = 0.5*(jplus**2 + jminus**2)
 O40 = 35*(jz**4) - 30*(jsquare*(jz**2)) + 25*(jz**2) -6*(jsquare) + 3*(jsquare**2)
-O42 = 0.25*((7*jz**2-jsquare -5)*(jplussquare + jminussquare) + (jplussquare + jminussquare)*(7*jz**2-jsquare -5))
+O42 = 0.25*((jplus**2 + jminus**2)*(7*jz**2-jsquare) -(jplus**2 + jminus**2)*5+
+            (7*jz**2-jsquare)*(jplus**2 + jminus**2)-5*(jplus**2 + jminus**2))
 O43 = 0.25*(jz*(jplus**3+jminus**3)+(jplus**3+jminus**3)*jz)
 O60 = 231*(jz**6) - 315*(jsquare*(jz**4)) + 735*(jz**4) + 105*((jsquare**2)*(jz**2)) - 525*(jsquare*(jz**2)) + 294*(jz**2) - 5*(jsquare**3) + 40*(jsquare**2) - 60*(jsquare)
 O44 = 0.5*(jplus**4 + jminus**4)
-O64 = 0.25*( ((11*jz**2)*(jplus**4+jminus**4) -jsquare*(jplus**4+jminus**4) - 38*(jplus**4+jminus**4)) + ((jplus**4+jminus**4)*(11*jz**2) -(jplus**4+jminus**4)*jsquare - (jplus**4+jminus**4)*38) )
-O62 = 0.25*((33*jz**4-(18*jsquare+123)*jz**2 + jsquare**2+ 10*jsquare+102)*(jplussquare+jminussquare) + (jplussquare+jminussquare)*(33*jz**4-(18*jsquare+123)*jz**2 + jsquare**2+ 10*jsquare+102))
+O64 = 0.25*((jplus**4 + jminus**4)*(11*jz**2 -jsquare) -(jplus**4 + jminus**4)*38 + (11*jz**2 -jsquare)*(jplus**4 + jminus**4)-38*(jplus**4 + jminus**4))
+O62 = 0.25*((jplus**2 + jminus**2)*(33*jz**4 -(18*jsquare*jz**2+123*jz**2) +jsquare**2 +10*jsquare) +((jplus**2 + jminus**2)*102) + 
+            (33*jz**4 -(18*jsquare*jz**2+123*jz**2) +jsquare**2 +10*jsquare)*(jplus**2 + jminus**2)+102*(jplus**2 + jminus**2))
 O63 = 0.25*((11*jz**3-3*jsquare*jz-59*jz)*(jplus**3+jminus**3) + (jplus**3+jminus**3)*(11*jz**3 - 3 * jsquare*jz-59*jz))
 O66 = 0.5*((jplus**6+jminus**6))
-O2n2 = (0-0.5j)*(jplussquare-jminussquare)
-O4n2 = (0-0.25j)*((7*jz**2-jsquare -5)*(jplussquare - jminussquare) + (jplussquare - jminussquare)*(7*jz**2-jsquare -5))
-O4n3 = (0-0.25j)*(jz*(jplus**3-jminus**3)+(jplus**3-jminus**3)*jz)
-O4n4 = (0-0.5j)*(jplus**4 - jminus**4)
-O6n2 = (0-0.25j)*((33*jz**4-(18*jsquare+123)*jz**2 + jsquare**2+ 10*jsquare+102)*(jplussquare-jminussquare) + (jplussquare-jminussquare)*(33*jz**4-(18*jsquare+123)*jz**2 + jsquare**2+ 10*jsquare+102))
-O6n3 = (0-0.25j)*((11*jz**3-3*jsquare*jz-59*jz)*(jplus**3-jminus**3) + (jplus**3-jminus**3)*(11*jz**3 - 3 * jsquare*jz-59*jz))
-O6n4 = (0-0.25j)*( ((11*jz**2)*(jplus**4-jminus**4) -jsquare*(jplus**4-jminus**4) - 38*(jplus**4-jminus**4)) + ((jplus**4-jminus**4)*(11*jz**2) -(jplus**4-jminus**4)*jsquare - (jplus**4-jminus**4)*38) )
-O6n6 = (0-0.5j)*((jplus**6-jminus**6))
+O2n2 = (-0.5j)*(jplus**2-jminus**2)
+O4n2 = (-0.25j)*((jplus**2 - jminus**2)*(7*jz**2-jsquare) -(jplus**2 - jminus**2)*5+
+            (7*jz**2-jsquare)*(jplus**2 - jminus**2)-5*(jplus**2 - jminus**2))
+O4n3 = (-0.25j) *((jplus**3 - jminus**3)*jz + jz*(jplus**3 - jminus**3))
+O4n4 = (-0.5j)*(jplus**4 - jminus**4)
+O6n2 = (-0.25j)*((jplus**2 - jminus**2)*(33*jz**4 -(18*jsquare*jz**2+123*jz**2) +jsquare**2 +10*jsquare) +((jplus**2 - jminus**2)*102) + 
+            (33*jz**4 -(18*jsquare*jz**2+123*jz**2) +jsquare**2 +10*jsquare)*(jplus**2 - jminus**2)+102*(jplus**2 - jminus**2))
+O6n3 =  -0.25j*((11*jz**3-3*jsquare*jz-59*jz)*(jplus**3-jminus**3) + (jplus**3-jminus**3)*(11*jz**3 - 3 * jsquare*jz-59*jz))
+O6n4 = -0.25j*((jplus**4 - jminus**4)*(11*jz**2 -jsquare) -(jplus**4 - jminus**4)*38 + (11*jz**2 -jsquare)*(jplus**4 - jminus**4)-38*(jplus**4 - jminus**4))
+O6n6 = (-0.5j)*(jplus**6-jminus**6)
 #Stevens operator conversion to [-1000,1000]range
 k20=1#-281/0.912
 k40=1#-344/(1.25e-2)
