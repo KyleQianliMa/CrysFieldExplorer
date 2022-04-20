@@ -93,4 +93,27 @@ def solver(B20,B40,B43,B60,B63,B66):
  s3=scattering3/N
  #s4=scattering4/N
  #return s1, s2, s3, s4, Energy, Eigenvectors,
- return np.array([s1, s2, s3]).squeeze(), Energy, Eigenvectors,jx,jy,jz, HH
+ return np.array([s1, s2, s3]).squeeze(), Energy, Eigenvectors,jx,jy,jz,jplus, HH
+
+def magH(jx, jy, jz, Bx,By,Bz):
+     S=1/2;L=3;J=7/2;
+     gj=(J*(J+1) - S*(S+1) + L*(L+1))/(2*J*(J+1)) +(J*(J+1) + S*(S+1) - L*(L+1))/(J*(J+1))
+     Na=6.0221409e23
+     muBT=5.7883818012e-2
+     muB=9.274009994e-21
+     kb=1.38064852e-16
+     magH = -gj*muBT*(Bx*jx+By*jy+Bz*jz)
+     return magH
+
+def magsovler1(B20,B40,B43,B60,B63,B66,Bx,By,Bz):
+    D20=B20
+    D40=B40
+    D43=B43
+    D60=B60
+    D63=B63
+    D66=B66
+    a=H(D20,D40,D43,D60,D63,D66)
+    b=magH(jx, jy, jz, Bx, By, Bz)
+    Eigenvalues, Eigenvectors = (np.linalg.eigh(a[2]+b))
+    Energy=Eigenvalues-Eigenvalues[0]
+    return Energy, Eigenvectors, jx,jy,jz,
