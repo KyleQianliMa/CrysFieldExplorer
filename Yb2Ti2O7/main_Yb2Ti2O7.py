@@ -131,7 +131,7 @@ for k in range(1000,60000,1000):
     #     Y=Y/norm
     #     Z=Z/norm
     #     M=M+np.sqrt((M1x*X)**2+(M1y*Y)**2+(M1z*Z)**2)
-    Magnetization.append(M/10000)
+    Magnetization.append(M/1000)
     B.append(k/10000)
     print(k)
 #--------------------Plots---------------------------------------
