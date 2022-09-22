@@ -23,7 +23,8 @@ class Operator():
 def H(D20,D40,D43,D60,D63,D66):
  H=D20*O20+D40*O40+D43*O43+D60*O60+D63*O63+D66*O66
  Eigenvalues, Eigenvectors = (np.linalg.eigh(H))
- Energy=Eigenvalues-Eigenvalues[0]
+ # Energy=Eigenvalues-Eigenvalues[0]
+ Energy=Eigenvalues
  return Energy, Eigenvectors, H
 
 def scattering(i,j,jx,jy,jz):

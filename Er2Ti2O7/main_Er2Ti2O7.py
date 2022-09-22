@@ -50,9 +50,11 @@ def gtensor(Jx,Jy,Jz,minus,plus):
     g=np.dot((2*gj),g)
     return g
 
+#-----To Guannan: Copy this section for cal_x function--------
+S=3/2;L=6;J=15/2;
+dim=int(2*J+1)
+gj=(J*(J+1) - S*(S+1) + L*(L+1))/(2*J*(J+1)) +(J*(J+1) + S*(S+1) - L*(L+1))/(J*(J+1))
 def x(Eigenvectors, Jx, Jy, Jz, E):
-    # S=1/2;L=3;J=7/2;
-     # gj=(J*(J+1) - S*(S+1) + L*(L+1))/(2*J*(J+1)) +(J*(J+1) + S*(S+1) - L*(L+1))/(J*(J+1))
      Na=6.0221409e23
      muB=9.274009994e-21
      kb=1.38064852e-16
@@ -76,7 +78,7 @@ def x(Eigenvectors, Jx, Jy, Jz, E):
              else: X = X+ 2*((np.absolute(Eigenvectors[:,m].H*Jz*Eigenvectors[:,n]).item())**2)*(np.exp(-E[n]/T))/(E[m]-E[n])
      X=C*X/(3*Z)
      return T,X
-
+#----------------------------------------------------------------------
 def magnetization(B20,B40,B43,B60,B63,B66,T):
     B=[]
     Magnetization=[]
@@ -217,7 +219,7 @@ B63  = -17.15*gamma*r6
 B66  = 21.6*gamma*r6
 
 sol=kp.solver(B20,B40,B43,B60,B63,B66)
-CalcEnergy=[sol[1][2].round(2),sol[1][4], sol[1][6], sol[1][8],sol[1][10],sol[1][12],sol[1][14]]
+CalcEnergy=[sol[1][2].round(2),sol[1][4], sol[1][6], sol[1][8],sol[1][10],sol[1][12],sol[1][14]]-sol[1][0]
 calcscattering=np.array(sol[0]).round(3).real.squeeze() #percentage of relative intensity
 Eigenvectors=(sol[2]).round(3)
 E_x=np.linspace(0, 150,150)
