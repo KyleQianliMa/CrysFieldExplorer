@@ -227,9 +227,8 @@ a1=3.0
 I_paper=lorentzian(E_x,1, a1, 6.3)+lorentzian(E_x,0.75, a1, 7.3)+lorentzian(E_x,0.20, a1, 15.7)\
     +lorentzian(E_x,0.04, a1, 60.2)+lorentzian(E_x,0.04, a1, 62.3)+lorentzian(E_x,0.09, a1, 66.3)+lorentzian(E_x,0.01, a1, 87.2)
 
-for i in range(0,8):
-    I_fitted=lorentzian(E_x,calcscattering[0], a1, CalcEnergy[0])+lorentzian(E_x,calcscattering[1], a1, CalcEnergy[1])+lorentzian(E_x,calcscattering[2], a1, CalcEnergy[2])+\
-        lorentzian(E_x,calcscattering[3], a1, CalcEnergy[3])+lorentzian(E_x,calcscattering[4], a1, CalcEnergy[4])+lorentzian(E_x,calcscattering[5], a1, CalcEnergy[5])+lorentzian(E_x,calcscattering[6], a1, CalcEnergy[6])
+I_fitted=lorentzian(E_x,calcscattering[0], a1, CalcEnergy[0])+lorentzian(E_x,calcscattering[1], a1, CalcEnergy[1])+lorentzian(E_x,calcscattering[2], a1, CalcEnergy[2])+\
+      lorentzian(E_x,calcscattering[3], a1, CalcEnergy[3])+lorentzian(E_x,calcscattering[4], a1, CalcEnergy[4])+lorentzian(E_x,calcscattering[5], a1, CalcEnergy[5])+lorentzian(E_x,calcscattering[6], a1, CalcEnergy[6])
 
 Jx=sol[3]
 Jy=sol[4]
