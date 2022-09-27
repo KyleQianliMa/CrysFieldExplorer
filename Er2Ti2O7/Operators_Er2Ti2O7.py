@@ -21,7 +21,15 @@ class Operator():
     return Jz
 
 def H(D20,D40,D43,D60,D63,D66):
- H=D20*O20+D40*O40+D43*O43+D60*O60+D63*O63+D66*O66
+ alpha=4/(45*35)
+ beta=2/(11*15*273)
+ gamma=8/(13*13*11*11*3*3*3*7)
+ theta_6=-1/891891
+ r2=0.6980
+ r4=1.218
+ r6=4.502
+#----pay attention to the 100,1000 constants when converting back to the real parameters 
+ H=alpha*r2*D20*O20*100 + beta*r4*D40*O40*100 + beta*r4*D43*O43*1000 + gamma*r6*D60*O60*100 + gamma*r6*D63*O63*100 + gamma*r6*D66*O66*100
  Eigenvalues, Eigenvectors = (np.linalg.eigh(H))
  # Energy=Eigenvalues-Eigenvalues[0]
  Energy=Eigenvalues
