@@ -211,12 +211,12 @@ r2=0.6980
 r4=1.218
 r6=4.502
 i=0
-B20  = 37.5*alpha*r2
-B40  = 33.5*beta*r4
-B43  = 282*beta*r4
-B60  = 1.25*gamma*r6
-B63  = -17.15*gamma*r6
-B66  = 21.6*gamma*r6
+B20  = 0.375
+B40  = 0.3335
+B43  = 0.282
+B60  = 0.0125
+B63  = -0.1715
+B66  = 0.216
 
 sol=kp.solver(B20,B40,B43,B60,B63,B66)
 CalcEnergy=[sol[1][2].round(2),sol[1][4], sol[1][6], sol[1][8],sol[1][10],sol[1][12],sol[1][14]]-sol[1][0]
@@ -227,8 +227,9 @@ a1=3.0
 I_paper=lorentzian(E_x,1, a1, 6.3)+lorentzian(E_x,0.75, a1, 7.3)+lorentzian(E_x,0.20, a1, 15.7)\
     +lorentzian(E_x,0.04, a1, 60.2)+lorentzian(E_x,0.04, a1, 62.3)+lorentzian(E_x,0.09, a1, 66.3)+lorentzian(E_x,0.01, a1, 87.2)
 
-I_fitted=lorentzian(E_x,calcscattering[0], a1, CalcEnergy[0])+lorentzian(E_x,calcscattering[1], a1, CalcEnergy[1])+lorentzian(E_x,calcscattering[2], a1, CalcEnergy[2])+\
-      lorentzian(E_x,calcscattering[3], a1, CalcEnergy[3])+lorentzian(E_x,calcscattering[4], a1, CalcEnergy[4])+lorentzian(E_x,calcscattering[5], a1, CalcEnergy[5])+lorentzian(E_x,calcscattering[6], a1, CalcEnergy[6])
+for i in range(0,8):
+    I_fitted=lorentzian(E_x,calcscattering[0], a1, CalcEnergy[0])+lorentzian(E_x,calcscattering[1], a1, CalcEnergy[1])+lorentzian(E_x,calcscattering[2], a1, CalcEnergy[2])+\
+        lorentzian(E_x,calcscattering[3], a1, CalcEnergy[3])+lorentzian(E_x,calcscattering[4], a1, CalcEnergy[4])+lorentzian(E_x,calcscattering[5], a1, CalcEnergy[5])+lorentzian(E_x,calcscattering[6], a1, CalcEnergy[6])
 
 Jx=sol[3]
 Jy=sol[4]
