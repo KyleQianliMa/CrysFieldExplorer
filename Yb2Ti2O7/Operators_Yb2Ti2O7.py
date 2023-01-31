@@ -23,8 +23,8 @@ class Operator():
 def H(D20,D40,D43,D60,D63,D66):
  H=D20*O20+D40*O40+D43*O43+D60*O60+D63*O63+D66*O66
  Eigenvalues, Eigenvectors = (np.linalg.eigh(H))
- Energy=Eigenvalues-Eigenvalues[0]
- return Energy, Eigenvectors, H
+ # Energy=Eigenvalues-Eigenvalues[0]
+ return Eigenvalues, Eigenvectors, H
 
 def scattering(i,j,jx,jy,jz):
     #k=8.6173324*10^(-2)
@@ -93,7 +93,7 @@ def solver(B20,B40,B43,B60,B63,B66):
  s3=scattering3/N
  #s4=scattering4/N
  #return s1, s2, s3, s4, Energy, Eigenvectors,
- return np.array([s1, s2, s3]).squeeze(), Energy, Eigenvectors,jx,jy,jz,jplus, HH
+ return np.array([s1, s2, s3]).squeeze(), Energy, Eigenvectors,jx,jy,jz, HH
 
 def magH(jx, jy, jz, Bx,By,Bz):
      S=1/2;L=3;J=7/2;
