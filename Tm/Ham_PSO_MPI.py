@@ -289,25 +289,14 @@ for iter_num  in range(ntry):
         final_result_buff[iter_num, 0:par_dim] = pos
         final_result_buff[iter_num, par_dim+0] = f_final[0] # total loss
         final_result_buff[iter_num, par_dim+1] = np.absolute(f_final[1]) # loss 1
-        final_result_buff[iter_num, par_dim+2] = f_final[2] # loss 2
-        final_result_buff[iter_num, par_dim+3] = f_final[3] # loss 3
-        final_result_buff[iter_num, par_dim+4:par_dim+8] = f_final[4][[0,2,4,6]]        # eigenvalues
-        final_result_buff[iter_num, par_dim+8:par_dim+11] = true_eigenvalue1 # eigenvalues
-        final_result_buff[iter_num, par_dim+11:par_dim+14] = f_final[5]        # intensity
-        final_result_buff[iter_num, par_dim+14:par_dim+17] = true_intensity1 # intensity
-        # final_result_buff[iter_num, par_dim+17:par_dim+21] = f_final[6][[0,2,4,6]]        # eigenvalues
-        # final_result_buff[iter_num, par_dim+21:par_dim+24] = true_eigenvalue2 # eigenvalues
-        # final_result_buff[iter_num, par_dim+24:par_dim+27] = f_final[7]        # intensity
-        # final_result_buff[iter_num, par_dim+27:par_dim+30] = true_intensity2 # intensity
-
-
+        final_result_buff[iter_num, par_dim+2] = f_final[2] # loss 4
 
 # comm.Barrier()
 # comm.Reduce([final_result_buff, ntry*(par_dim+17), MPI.DOUBLE], [final_result, ntry*(par_dim+17), MPI.DOUBLE], op=MPI.SUM, root=0)
 
 # if rank == 0:
 
-        np.savetxt('Yb2Ti2O7_result_case'+str(case_num)+'.csv', final_result, fmt='%2.3e', delimiter=', ')
+        np.savetxt('Tm_result_case'+str(case_num)+'.csv', final_result, fmt='%2.3e', delimiter=', ')
 
 # comm.Barrier()
 
