@@ -11,7 +11,9 @@ from mpi4py import MPI
 import os
 import time
 # import true_data as td
-S=1;L=5;J=6;
+S=1.0
+L=5.0
+J=6.0
 def L(x,A,a1,dE):
     pi=3.14159265358
     Y=(A/pi)*(a1/2.0)/((x-dE)**2+(a1/2.0)**2)    
@@ -19,7 +21,7 @@ def L(x,A,a1,dE):
 
 
 def cal_x(Eigenvectors, E, Jx, Jy, Jz):
-
+    S=1.0;L=5.0;J=6.0;
     gj=(J*(J+1) - S*(S+1) + L*(L+1))/(2*J*(J+1)) +(J*(J+1) + S*(S+1) - L*(L+1))/(J*(J+1))
     Na=6.0221409e23
     muB=9.274009994e-21
@@ -77,30 +79,31 @@ def loss_func_ensemble(x):
 
         intensity1 = sol1[0].real
 
-        CalcEnergy1 = [sol1[1][1],sol1[1][2],sol1[1][3],sol1[1][4],sol1[1][5],sol1[1][6],sol1[1][7],sol1[1][8],sol1[1][9],sol1[1][10],sol1[1][11],sol1[1][12]] - sol1[1][0] 
-        calcscattering1=np.array([sol1[0][0],sol1[0][1],sol1[0][2]]).real
-        #calcscattering1=np.array(sol1[0]).round(3).real.squeeze()
+        # CalcEnergy1 = [sol1[1][1],sol1[1][2],sol1[1][3],sol1[1][4],sol1[1][5],sol1[1][6],sol1[1][7],sol1[1][8],sol1[1][9],sol1[1][10],sol1[1][11],sol1[1][12]] - sol1[1][0] 
+        # calcscattering1=np.array([sol1[0][0],sol1[0][1],sol1[0][2]]).real
+        # #calcscattering1=np.array(sol1[0]).round(3).real.squeeze()
 
-        a1=1000000000000 #!!!!!!Change Peak width to observed dataI_cal=0
-        I_cal=0
-        for i in range(0,13):
-            I_cal =I_cal+ L(true_E, calcscattering1[i], a1, CalcEnergy1[i])
-        I_cal = I_cal / np.sum(I_cal)
+        # a1=1000000000000 #!!!!!!Change Peak width to observed dataI_cal=0
+        # I_cal=0
+        # for i in range(0,13):
+        #     I_cal =I_cal+ L(true_E, calcscattering1[i], a1, CalcEnergy1[i])
+        # I_cal = I_cal / np.sum(I_cal)
 
         # ----------------------------------------------------------------
 
         loss1 = 0.0
-        for i in range(0,13):
-            loss1 = loss1 + (np.linalg.det((true_eigenvalue1[i] + eigenvalues1[i]) * np.eye(8) - HMatrix1))**2 / (np.linalg.det(true_eigenvalue1[i] * np.eye(8)))**2  
-
-        loss2 = np.sqrt(np.mean((true_I - I_cal)**2.0))/np.sqrt(np.mean(true_I**2.0)) # Spectrum Fitting
+        for i in range(0,12):
+            loss1 = loss1 + (np.linalg.det((true_eigenvalue1[i] + eigenvalues1[0]) * np.eye(13) - HMatrix1))**2 / (np.linalg.det(true_eigenvalue1[i] * np.eye(13)))**2  
+        loss1=np.log10(np.absolute(loss1))
+        
+        # loss2 = np.sqrt(np.mean((true_I - I_cal)**2.0))/np.sqrt(np.mean(true_I**2.0)) # Spectrum Fitting
 
         loss4 = np.mean((true_intensity1 - intensity1)**2) # Discrete CEF transition level fitting
 
-        T, X = cal_x(eigenvectors1, E1, Jx1, Jy1, Jz1)
-        loss3 = np.sqrt(np.mean(((1./X - 1./true_X))**2.0))/np.sqrt(np.mean(((1./true_X))**2.0))
+        # T, X = cal_x(eigenvectors1, E1, Jx1, Jy1, Jz1)
+        # loss3 = np.sqrt(np.mean(((1./X - 1./true_X))**2.0))/np.sqrt(np.mean(((1./true_X))**2.0))
 
-        loss = np.absolute(loss1) * 1e10 + loss2 * 0.0 + loss3 * 1.0 + loss4 * 20.0 # Spectrum fitting turned off at the start
+        loss = np.absolute(loss1) * 1e10 + loss4 * 20.0 # Spectrum fitting turned off at the start
 
         total_loss[i] = loss
 
@@ -135,34 +138,35 @@ def print_loss(x):
 
         intensity1 = sol1[0].real
 
-        CalcEnergy1 = [sol1[1][1],sol1[1][2],sol1[1][3],sol1[1][4],sol1[1][5],sol1[1][6],sol1[1][7],sol1[1][8],sol1[1][9],sol1[1][10],sol1[1][11],sol1[1][12]] - sol1[1][0] 
-        calcscattering1=np.array([sol1[0][0],sol1[0][1],sol1[0][2]]).real
-        #calcscattering1=np.array(sol1[0]).round(3).real.squeeze()
+        # CalcEnergy1 = [sol1[1][1],sol1[1][2],sol1[1][3],sol1[1][4],sol1[1][5],sol1[1][6],sol1[1][7],sol1[1][8],sol1[1][9],sol1[1][10],sol1[1][11],sol1[1][12]] - sol1[1][0] 
+        # calcscattering1=np.array([sol1[0][0],sol1[0][1],sol1[0][2]]).real
+        # #calcscattering1=np.array(sol1[0]).round(3).real.squeeze()
 
-        a1=1000000000000 #!!!!!!Change Peak width to observed dataI_cal=0
-        I_cal=0
-        for i in range(0,13):
-            I_cal =I_cal+ L(true_E, calcscattering1[i], a1, CalcEnergy1[i])
-        I_cal = I_cal / np.sum(I_cal)
+        # a1=1000000000000 #!!!!!!Change Peak width to observed dataI_cal=0
+        # I_cal=0
+        # for i in range(0,13):
+        #     I_cal =I_cal+ L(true_E, calcscattering1[i], a1, CalcEnergy1[i])
+        # I_cal = I_cal / np.sum(I_cal)
 
         # ----------------------------------------------------------------
 
         loss1 = 0.0
-        for i in range(0,13):
-            loss1 = loss1 + (np.linalg.det((true_eigenvalue1[i] + eigenvalues1[i]) * np.eye(8) - HMatrix1))**2 / (np.linalg.det(true_eigenvalue1[i] * np.eye(8)))**2  
-
-        loss2 = np.sqrt(np.mean((true_I - I_cal)**2.0))/np.sqrt(np.mean(true_I**2.0)) # Spectrum Fitting
+        for i in range(0,12):
+            loss1 = loss1 + (np.linalg.det((true_eigenvalue1[i] + eigenvalues1[0]) * np.eye(13) - HMatrix1))**2 / (np.linalg.det(true_eigenvalue1[i] * np.eye(13)))**2  
+        loss1=np.log10(np.absolute(loss1))
+        
+        # loss2 = np.sqrt(np.mean((true_I - I_cal)**2.0))/np.sqrt(np.mean(true_I**2.0)) # Spectrum Fitting
 
         loss4 = np.mean((true_intensity1 - intensity1)**2) # Discrete CEF transition level fitting
 
-        T, X = cal_x(eigenvectors1, E1, Jx1, Jy1, Jz1)
-        loss3 = np.sqrt(np.mean(((1./X - 1./true_X))**2.0))/np.sqrt(np.mean(((1./true_X))**2.0))
+        # T, X = cal_x(eigenvectors1, E1, Jx1, Jy1, Jz1)
+        # loss3 = np.sqrt(np.mean(((1./X - 1./true_X))**2.0))/np.sqrt(np.mean(((1./true_X))**2.0))
 
-        loss = np.absolute(loss1) * 1e10 + loss2 * 0.0 + loss3 * 1.0 + loss4 * 20.0 # Spectrum fitting turned off at the start
+        loss = np.absolute(loss1) * 1e10   + loss4 * 20.0 # Spectrum fitting turned off at the start
 
         total_loss[i] = loss
 
-    return total_loss, loss1, loss2, loss3, eigenvalues1, intensity1
+    return total_loss, loss1, loss4, eigenvalues1, intensity1
 
 
 
@@ -179,11 +183,11 @@ def print_loss(x):
 #--------------------------------------
 # Process the spectrum data
 
-true_E=np.linspace(0, 150, 300)
+# true_E=np.linspace(0, 150, 300)
 
-a1=1000000000 #!!!Same as before, set this to experimentally observed peak width
-true_I = L(true_E,0.284, a1, 76.8)+L(true_E,1, a1, 82.12)+L(true_E, 0.19, a1, 116.24)#Sum up all the intensities
-true_I = true_I / np.sum(true_I)
+# a1=1000000000 #!!!Same as before, set this to experimentally observed peak width
+# true_I = L(true_E,0.284, a1, 76.8)+L(true_E,1, a1, 82.12)+L(true_E, 0.19, a1, 116.24)#Sum up all the intensities
+# true_I = true_I / np.sum(true_I)
 
 
 par_dim = 6
@@ -217,7 +221,7 @@ true_intensity1 = np.array([1,2,3,4,5,6,7,8,9,10,11,12])
 # print(np.array(true_sol[0]).round(3).real.squeeze())
 # exit()
 
-true_T,true_X=np.array[1,2]#!!!!need to import data here
+# true_T,true_X=np.array[1,2]#!!!!need to import data here
 
 ntry = 90*1
 
@@ -276,7 +280,7 @@ for iter_num  in range(ntry):
         optimizer = ps.single.GlobalBestPSO(n_particles=n_particles, dimensions=par_dim, options=options, bounds=bnds, init_pos=x_init)
         # optimizer = ps.single.GlobalBestPSO(n_particles=400, dimensions=par_dim, options=options, bounds=bnds, init_pos=np.random.rand(400,par_dim) * 2.0 - 1.0)
 
-        cost, pos = optimizer.optimize(loss_func_ensemble, iters=1000)
+        cost, pos = optimizer.optimize(loss_func_ensemble, iters=500)
 
         # print_flag = True
 
