@@ -92,8 +92,8 @@ def loss_func_ensemble(x):
         # ----------------------------------------------------------------
 
         loss1 = 0.0
-        for i in range(0,12):
-            loss1 = loss1 + (np.linalg.det((true_eigenvalue1[i] + eigenvalues1[0]) * np.eye(13) - HMatrix1))**2 / (np.linalg.det(true_eigenvalue1[i] * np.eye(13)))**2  
+        for j in range(0,12):
+            loss1 = loss1 + (np.linalg.det((true_eigenvalue1[j] + eigenvalues1[0]) * np.eye(13) - HMatrix1))**2 / (np.linalg.det(true_eigenvalue1[j] * np.eye(13)))**2  
         loss1=np.log10(np.absolute(loss1))
         
         # loss2 = np.sqrt(np.mean((true_I - I_cal)**2.0))/np.sqrt(np.mean(true_I**2.0)) # Spectrum Fitting
@@ -151,8 +151,8 @@ def print_loss(x):
         # ----------------------------------------------------------------
 
         loss1 = 0.0
-        for i in range(0,12):
-            loss1 = loss1 + (np.linalg.det((true_eigenvalue1[i] + eigenvalues1[0]) * np.eye(13) - HMatrix1))**2 / (np.linalg.det(true_eigenvalue1[i] * np.eye(13)))**2  
+        for j in range(0,12):
+            loss1 = loss1 + (np.linalg.det((true_eigenvalue1[j] + eigenvalues1[0]) * np.eye(13) - HMatrix1))**2 / (np.linalg.det(true_eigenvalue1[j] * np.eye(13)))**2  
         loss1=np.log10(np.absolute(loss1))
         
         # loss2 = np.sqrt(np.mean((true_I - I_cal)**2.0))/np.sqrt(np.mean(true_I**2.0)) # Spectrum Fitting
