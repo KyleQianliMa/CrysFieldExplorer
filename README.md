@@ -7,5 +7,7 @@ A comparsion of the new loss and traditional $\chi^2$ loss has been displayed be
 
 The details of this program can be found at https://scripts.iucr.org/cgi-bin/paper?S1600576723005897.
 
+![alt text](images/loss.jpg)
+
+
 A comparison of the new loss function $L_{spectrum}$ vs traditional $\chi^2$ loss along a random line in a 15 dimensional parameter space.
-![alt text](https://raw.githubusercontent.com/KyleQianliMa/CrysFieldExplorer/blob/main/images/loss.jpg)
