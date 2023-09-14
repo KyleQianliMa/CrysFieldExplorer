@@ -6,3 +6,4 @@ The novalty of CrysFieldExplorer is it adopts a new loss function using theory o
 The details of this program can be found at https://scripts.iucr.org/cgi-bin/paper?S1600576723005897.
 
 
+![](/image/loss.png)
