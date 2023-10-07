@@ -23,5 +23,5 @@ The Yb2Ti2O7 is a classical example with 6 CEF parameters, traditional algorithm
 From these solutions it can produce excellent agreement between physical measured data and theoretical predictions.
 
 
-![alt text](images/Yb2Ti2O7_comparison.png)
+![alt text](images/Yb2Ti2O7_comparsion.png)
 
