@@ -14,7 +14,7 @@ A comparison of the new loss function $L_{spectrum}$ vs traditional $\chi^2$ los
 
 This repo is organized with two types of examples corresponding to two types of optimization methods, Particle Swarm Optimization (PSO) and Covariance Matrix Adaptation Evolution Strategy (CMA-ES)  used in conjunction with $L_{spectrum}. Generally speaking, when dealing with < 8 CEF parameters, PSO is a good choice for accuracy and for >=8 CEF parameters CMA-ES has shown significant gain in optimizing speed. In both types of examples the codes are desgined with being able to run parallel using mpi4py in mind.
 
-#Example 1 - Yb2Ti2O7
+# Example 1 Yb2Ti2O7
 
 The Yb2Ti2O7 is a classical example with 6 CEF parameters, traditional algorithms requires estimation of point charge model to provide insight. With CrysFieldExplorer, it can search large parameter phase space and provide a cluster of solutions of all 6 CEF parameters.
 
