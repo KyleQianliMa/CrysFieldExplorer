@@ -10,6 +10,7 @@ class CrysFieldExplorer(op.Stevens_Operator,op.Quantum_Operator):
     access of all quantum operators.
     
     Input Description:
+        
     Magnetic_ion[Str]: Acceptable input format exampel: "Er3+". 
     
     Stevens_idx[List]: Stevens Operator index in the form of [n,m], n=subscript,  m=superscript.  
@@ -71,7 +72,7 @@ class CrysFieldExplorer(op.Stevens_Operator,op.Quantum_Operator):
          magH=self.magnetic_Hamiltonian()
          Eigenvalues, Eigenvectors = (np.linalg.eigh(H+magH))
          Energy=Eigenvalues-Eigenvalues[0]
-         return Energy, Eigenvectors
+         return Energy, Eigenvectors, magH
     
     def scattering(self,i,j):
         #k=8.6173324*10^(-2)
@@ -117,7 +118,59 @@ class CrysFieldExplorer(op.Stevens_Operator,op.Quantum_Operator):
                 S.update({i:(s_degen[i]/total).item()})
             return S
         
-            
+
+class Utilities(CrysFieldExplorer):
+    def __init__(self,Magnetic_ion,Stevens_idx,alpha,beta,gamma,Parameter,temperature,field):
+        super().__init__(Magnetic_ion)
+        
+    # @staticmethod
+    # def lorentzian(x,Area,width,x0):
+    #     pi=np.pi
+    #     Y=(Area/pi)*(width/2)/((x-x0)**2+(width/2)**2)
+    #     return Y
+    
+    # @staticmethod
+    # def chi(Obs,Exp):
+    #     summation=0
+    #     for i in range(len(Obs)):
+    #         if Exp[i]<2e-5:continue
+    #         else:
+    #             summation+=(Obs[i]-Exp[i])**2/Exp[i]
+    #     return summation
+    
+    # @staticmethod
+    # def test(a):
+    #     return print(a)
+    
+    # @staticmethod
+    # def susceptibility_VanVleck(Eigenvectors, Jx, Jy, Jz, E):
+    #       # S=3/2;L=6;J=15/2
+    #       # gj=(J*(J+1) - S*(S+1) + L*(L+1))/(2*J*(J+1)) +(J*(J+1) + S*(S+1) - L*(L+1))/(J*(J+1))
+    #       Na=6.0221409e23
+    #       muB=9.274009994e-21
+    #       kb=1.38064852e-16
+    #       C=(gj**2)*(Na)*(muB)**2/kb #X*Na* mu_b^2*X/kb in cgs unit
+    #       Z=0
+    #       # T=np.linspace(1, 300,150)
+    #       T=TX[0][::50]
+         
+    #       for n in range(0,dim):
+    #           Z=Z+np.exp(-E[n]/T)
+    #       X=0
+    #       for n in range(0,dim):
+    #           for m in range(0,dim):
+    #               if np.abs(E[m]-E[n])<1e-5: X=X+(np.absolute(Eigenvectors[:,n].H*Jx*Eigenvectors[:,m]).item())**2*(np.exp(-E[n]/T))/T
+    #               else: X = X+ 2*(np.absolute(Eigenvectors[:,m].H*Jx*Eigenvectors[:,n]).item())**2*(np.exp(-E[n]/T))/(E[m]-E[n])
+    #       for n in range(0,dim):
+    #           for m in range(0,dim):
+    #               if  np.abs(E[m]-E[n])<1e-5: X=X+(np.absolute(Eigenvectors[:,n].H*Jy*Eigenvectors[:,m]).item())**2*(np.exp(-E[n]/T))/T
+    #               else: X = X+ 2*(np.absolute(Eigenvectors[:,m].H*Jy*Eigenvectors[:,n]).item())**2*(np.exp(-E[n]/T))/(E[m]-E[n])
+    #       for n in range(0,dim):
+    #           for m in range(0,dim):
+    #               if  np.abs(E[m]-E[n])<1e-5: X=X+(np.absolute(Eigenvectors[:,n].H*Jz*Eigenvectors[:,m]).item())**2*(np.exp(-E[n]/T))/T
+    #               else: X = X+ 2*((np.absolute(Eigenvectors[:,m].H*Jz*Eigenvectors[:,n]).item())**2)*(np.exp(-E[n]/T))/(E[m]-E[n])
+    #       X=C*X/(3*Z)
+    #       return T,X
 #%% test
 if __name__ == "__main__":
     alpha=0.01*10.0*4/(45*35)
@@ -141,14 +194,13 @@ if __name__ == "__main__":
     Parameter['65']=10*Parameter['65']
     Parameter['66']=10*Parameter['66']
     
-    
     CEF=CrysFieldExplorer('Er3+',Stevens_idx,alpha,beta,gamma,Parameter,temp,field)
     ev,ef,H=CEF.Hamiltonian()
     print(np.round(ev-ev[0],3))
-    s=CEF.Intensity(0)
     Intensity=CEF.Neutron_Intensity(2, 0, True)
-    print(Intensity)
     
+    uti=Utilities('Er3+', Stevens_idx, alpha, beta, gamma, Parameter, temp, field)
+    # uti.test()
     
 # B20,B21,B22,B40,B41,B42,B43,B44,B60,B61,B62,B63,B64,B65,B66
 
