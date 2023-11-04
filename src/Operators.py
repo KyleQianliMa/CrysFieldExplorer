@@ -29,7 +29,12 @@ REion['Tm3+'] = [1., 5., 6.]
 REion['Yb3+'] = [0.5, 3., 3.5]
 
 class Quantum_Operator():
-    '''The total angular momentum operator'''
+    '''The total angular momentum operator Constructed from Magnetic Ion
+       Input Description:
+       
+       Magnetic_ion[Str]: Magnetic ion. Example: "Er3+"
+     '''
+    
     def __init__(self, Magnetic_ion):
         self.S=REion[Magnetic_ion][0]
         self.L=REion[Magnetic_ion][1]
@@ -80,8 +85,14 @@ class Quantum_Operator():
 class Stevens_Operator(Quantum_Operator):
     
     '''Child class of Quantum_Operator.
-       Calculate the Stevens Operator from the quantum operator by inheriting Jx,Jy,Jz,Jplus,Jminus,Jsquare etc from Base Class.
-       Using hashmap data struct for readability.'''
+    
+       Calculate the Stevens Operator from the quantum operator by inheriting Jx,Jy,Jz,Jplus,Jminus,Jsquare etc from Parent Class.
+       Using hashmap data struct for readability.
+       
+       Input Description:
+          
+       Magnetic_ion[Str]: Magnetic ion. Example: "Er3+"
+    '''
     
     def __init__(self,Magnetic_ion):
         super().__init__(Magnetic_ion)
