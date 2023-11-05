@@ -17,88 +17,129 @@ from scipy import optimize
 from scipy.special import wofz
 from scipy import integrate
 import scipy.linalg as LA
+from mpi4py import MPI
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.ticker import ScalarFormatter
-from Operators import *
+import Operators as op
 import CrysFieldExplorer as crs
 
 class Optimization(crs.CrysFieldExplorer):
-    def __init__(self, Magnetic_ion, Stevens_idx, alpha, beta, gamma, Parameter, temperature, field):
+    def __init__(self, Magnetic_ion, Stevens_idx, alpha, beta, gamma, Parameter, temperature, field, true_eigenvalue, true_intensity):
+        self.Stevens_idx=Stevens_idx
+        self.alpha=alpha
+        self.beta=beta
+        self.gamma=gamma
+        self.Parameter=Parameter
+        self.T=temperature
+        self.field=field
+        self.true_eigenvalue=true_eigenvalue
+        self.true_intensity=true_intensity
+        # self.true_X=true_X
         super().__init__(Magnetic_ion, Stevens_idx, alpha, beta, gamma, Parameter, temperature, field)
-    
-    def test(self):
-        print(self.J)
+
         
     @staticmethod
-    def cma_loss_single(Parameters):
-
-        global true_eigenvalue1, true_intensity1, bound, print_flag, true_T, true_X
+    def test(Parameters):
+        x_norm=np.zeros(len(Parameters))
+        for index,key in enumerate(Parameters):
+            x_norm[index]=Parameters[key]
+        print(x_norm)
         
-        x_norm = Parameters
+    def cma_loss_single(self,Parameters):
+        # global true_eigenvalue1, true_intensity1, bound, print_flag, true_T, true_X
         
-        sol = crs.CrysFieldExplorer(Magnetic_ion, Stevens_idx, alpha, beta, gamma, Parameter, temperature, field).Hamiltonian()
+        #parsing parameters
+        x_norm=np.zeros(len(Parameters))
+        for index,key in enumerate(Parameters):
+            x_norm[index]=Parameters[key]
         
-        Jx1=sol1[3]
-        Jy1=sol1[4]
-        Jz1=sol1[5]
+        #calculate Hamiltonian and ev, ef, H
+        sol = super().Hamiltonian()
         
-        eigenvalues1 = sol1[1]
-        Eigenvectors1=sol1[2]
-        HMatrix1 = sol1[6]
+        Jx   =super().Jx()
+        Jy   =super().Jy()
+        Jz   =super().Jz
+        dim  =len(Jx)
+        J    =(dim-1)/2
         
-        intensity1 = sol1[0][0:7].real
+        eigenvalues  = sol[0]
+        Eigenvectors = sol[1]
+        HMatrix      = sol[2]
         
-        sol25 = kp.solver(x_norm[0],x_norm[1],x_norm[2],x_norm[3],x_norm[4],x_norm[5],x_norm[6],x_norm[7],x_norm[8],x_norm[9],x_norm[10],x_norm[11],x_norm[12],x_norm[13],x_norm[14],25)
-        intensity25 = sol25[0].real
-        
+        #take in experimentally observed energy levels
+        true_eigenvalue=self.true_eigenvalue
+        true_intensity=self.true_intensity
+        # intensity1 = super().Neutron_Intensity(2, 0, True)
         
         # ----------------------------------------------------------------
-        
         loss1 = 0.0
-        loss1 = loss1 + (np.linalg.det((true_eigenvalue1[0] + eigenvalues1[0]) * np.eye(int(2*J+1)) - HMatrix1))**2 
-        loss1 = loss1 + (np.linalg.det((true_eigenvalue1[1] + eigenvalues1[0]) * np.eye(int(2*J+1)) - HMatrix1))**2 
-        loss1 = loss1 + (np.linalg.det((true_eigenvalue1[2] + eigenvalues1[0]) * np.eye(int(2*J+1)) - HMatrix1))**2 
-        loss1 = loss1 + (np.linalg.det((true_eigenvalue1[3] + eigenvalues1[0]) * np.eye(int(2*J+1)) - HMatrix1))**2 
-        loss1 = loss1 + (np.linalg.det((true_eigenvalue1[4] + eigenvalues1[0]) * np.eye(int(2*J+1)) - HMatrix1))**2 
-        loss1 = loss1 + (np.linalg.det((true_eigenvalue1[5] + eigenvalues1[0]) * np.eye(int(2*J+1)) - HMatrix1))**2 
-        loss1 = loss1 + (np.linalg.det((true_eigenvalue1[6] + eigenvalues1[0]) * np.eye(int(2*J+1)) - HMatrix1))**2 
-        loss1 = np.log10(np.absolute(loss1))
+        loss1 = loss1 + (np.linalg.det((true_eigenvalue[0] + eigenvalues[0]) * np.eye(int(2*J+1)) - HMatrix))**2 
+        loss1 = loss1 + (np.linalg.det((true_eigenvalue[1] + eigenvalues[0]) * np.eye(int(2*J+1)) - HMatrix))**2 
+        loss1 = loss1 + (np.linalg.det((true_eigenvalue[2] + eigenvalues[0]) * np.eye(int(2*J+1)) - HMatrix))**2 
+        loss1 = loss1 + (np.linalg.det((true_eigenvalue[3] + eigenvalues[0]) * np.eye(int(2*J+1)) - HMatrix))**2 
+        loss1 = loss1 + (np.linalg.det((true_eigenvalue[4] + eigenvalues[0]) * np.eye(int(2*J+1)) - HMatrix))**2 
+        loss1 = loss1 + (np.linalg.det((true_eigenvalue[5] + eigenvalues[0]) * np.eye(int(2*J+1)) - HMatrix))**2 
+        loss1 = loss1 + (np.linalg.det((true_eigenvalue[6] + eigenvalues[0]) * np.eye(int(2*J+1)) - HMatrix))**2 
+        loss1 = np.log10(np.absolute(loss1))        
+        # loss2=0.0
+        # loss2 = np.sqrt(np.sum((true_intensity1 - intensity1)**2))/ np.sqrt(np.sum((true_intensity1)**2))
         
-        loss2=0.0
-        loss2 = np.sqrt(np.sum((true_intensity1 - intensity1)**2))/ np.sqrt(np.sum((true_intensity1)**2))
-        
-        loss3 = np.sqrt(np.sum((true_intensity25 - intensity25)**2))/ np.sqrt(np.sum((true_intensity25)**2))
+        # loss3 = np.sqrt(np.sum((true_intensity25 - intensity25)**2))/ np.sqrt(np.sum((true_intensity25)**2))
         
         # T, X = calc_x(Eigenvectors1,Jx1, Jy1, Jz1, (sol1[1]-sol1[1][0])/0.086173303)
         # lossX = np.sqrt(np.mean(((1./X - 1./true_X))**2.0))/np.sqrt(np.mean(((1./true_X))**2.0))
         
         
-        t=100.0
-        k=100.0
-        X=100
-        loss = np.maximum(-20,loss1)+np.maximum(0.001,loss2*t) +loss3*k# + X*lossX
-        
+        # t=100.0
+        # k=100.0
+        # X=100
+        # loss = np.maximum(-20,loss1)+np.maximum(0.001,loss2*t) +loss3*k# + X*lossX
+        loss=loss1
         # print(loss1, loss2*t, loss3*k,X*lossX)
         
         total_loss = loss
         
         return total_loss
 #%%
-
+if __name__=="__main__":
+    alpha=0.01*10.0*4/(45*35)
+    beta=0.01*100.0*2/(11*15*273)
+    gamma=0.01*10.0*8/(13**2*11**2*3**3*7)
+    Stevens_idx=[[2,0],[2,1],[2,2],[4,0],[4,1],[4,2],[4,3],[4,4],[6,0],[6,1],[6,2],[6,3],[6,4],[6,5],[6,6]]
+    test=pd.read_csv(f'C:/Users/qmc/OneDrive/ONRL/Data/CEF/Python/Eradam/Eradam_MPI_Newfit_goodsolution.csv',header=None)
+    Parameter=dict()
+    temp=5
+    field=0
+    j=0
+    for i in Stevens_idx:
+        Parameter.update({f'{i[0]}{i[1]}':test[j][0]})
+        j+=1
+    
+    Parameter['22']=10*Parameter['22']
+    Parameter['41']=0.1*Parameter['41']
+    Parameter['43']=10*Parameter['43']
+    Parameter['61']=0.1*Parameter['61']
+    Parameter['63']=10*Parameter['63']
+    Parameter['65']=10*Parameter['65']
+    Parameter['66']=10*Parameter['66']
+    
+    true_eigenvalue = np.array([1.77, 5.25, 7.17,  13.72, 22.58, 27.81, 49.24]) #type in experiment measured values
+    true_intensity  = np.array([   1.00,0.365,0.000,0.167,0.074,0.027,0.010])
+    obj=Optimization('Er3+', Stevens_idx, alpha, beta, gamma, Parameter, temp, field,true_eigenvalue,true_intensity)
+    ev,_,_=obj.Hamiltonian()
+    obj.test(Parameter)
+    print(np.round(ev-ev[0],3))
+    obj.cma_loss_single(Parameter)
 #%%#############################
 # 	  The main algorithm
 ################################
-if __name__=="__main__":
+
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
     size = comm.Get_size()
     
     #--------------------------------------
     # Process the spectrum data
-    
-    alpha= 4/(45*35)
-    beta=2/(11*15*273)
-    gamma=8/(13**2*11**2*3**3*7)
     
     par_dim = 15
     bound = np.zeros((2,par_dim))
@@ -119,14 +160,6 @@ if __name__=="__main__":
     bound[:,13]  = [-1, 1]
     bound[:,14]  = [-1, 1]
     bound = bound * 100.0
-    
-    
-    true_eigenvalue1 = np.array([1.77, 5.25, 7.17,  13.72, 22.58, 27.81, 49.24]) #type in experiment measured values
-    true_intensity1=np.array([   1.00,0.365,0.000,0.167,0.074,0.027,0.010])
-    
-    
-    true_intensity25=np.array([1   ,       0.343, 0.00, 0.123, 0.070, 0.0218, 0.0162, 0.207, 0.0228, 0.03944])
-    #                          1.75,       5.29 , 7.1 , 13.73, 22.63, 27.72 , 49.32 , 3.44 , 11.81 , 8.29
     
     ntry = 30
     
