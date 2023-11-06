@@ -41,13 +41,7 @@ class Optimization(crs.CrysFieldExplorer):
         
     def test(self):
         print(self.Parameter)
-        
-    
-    def test_class(self, Parameters):
-        Optimization.Parameter=Parameters 
-        ev,ef,H=super().Hamiltonian()
-        return ev,ef,H
-    
+         
     
     def cma_loss_single(self):
         # global true_eigenvalue1, true_intensity1, bound, print_flag, true_T, true_X
@@ -68,20 +62,22 @@ class Optimization(crs.CrysFieldExplorer):
         #take in experimentally observed energy levels
         true_eigenvalue=self.true_eigenvalue
         true_intensity=self.true_intensity
-        # intensity1 = super().Neutron_Intensity(2, 0, True)
+        
+        calint=super().Neutron_Intensity(2,0,True)
+        Intensity=np.zeros(len(calint))
+        j=0
+        for i in calint:
+            Intensity[j]=calint[i]
+            j+=1
+        Intensity=Intensity[1:len(calint)]
         
         # ----------------------------------------------------------------
-        loss1 = 0.0
-        loss1 = loss1 + (np.linalg.det((true_eigenvalue[0] + eigenvalues[0]) * np.eye(int(2*J+1)) - HMatrix))**2 
-        loss1 = loss1 + (np.linalg.det((true_eigenvalue[1] + eigenvalues[0]) * np.eye(int(2*J+1)) - HMatrix))**2 
-        loss1 = loss1 + (np.linalg.det((true_eigenvalue[2] + eigenvalues[0]) * np.eye(int(2*J+1)) - HMatrix))**2 
-        loss1 = loss1 + (np.linalg.det((true_eigenvalue[3] + eigenvalues[0]) * np.eye(int(2*J+1)) - HMatrix))**2 
-        loss1 = loss1 + (np.linalg.det((true_eigenvalue[4] + eigenvalues[0]) * np.eye(int(2*J+1)) - HMatrix))**2 
-        loss1 = loss1 + (np.linalg.det((true_eigenvalue[5] + eigenvalues[0]) * np.eye(int(2*J+1)) - HMatrix))**2 
-        loss1 = loss1 + (np.linalg.det((true_eigenvalue[6] + eigenvalues[0]) * np.eye(int(2*J+1)) - HMatrix))**2 
+        loss1=0
+        for i in range(len(true_eigenvalue)):
+            loss1+=(np.linalg.det((true_eigenvalue[i] + eigenvalues[0]) * np.eye(int(2*J+1)) - HMatrix))**2  
         loss1 = np.log10(np.absolute(loss1))        
-        # loss2=0.0
-        # loss2 = np.sqrt(np.sum((true_intensity1 - intensity1)**2))/ np.sqrt(np.sum((true_intensity1)**2))
+        loss2=0.0
+        loss2 = np.sqrt(np.sum((true_intensity - Intensity)**2))/ np.sqrt(np.sum((true_intensity)**2))
         
         # loss3 = np.sqrt(np.sum((true_intensity25 - intensity25)**2))/ np.sqrt(np.sum((true_intensity25)**2))
         
@@ -93,13 +89,13 @@ class Optimization(crs.CrysFieldExplorer):
         # k=100.0
         # X=100
         # loss = np.maximum(-20,loss1)+np.maximum(0.001,loss2*t) +loss3*k# + X*lossX
-        loss=loss1
+        loss=loss1+loss2
         # print(loss1, loss2*t, loss3*k,X*lossX)
         
         total_loss = loss
         
         return total_loss
-
+    
 #%%
 if __name__=="__main__":
     alpha=0.01*10.0*4/(45*35)
@@ -130,13 +126,18 @@ if __name__=="__main__":
     # ev,_,_=obj.Hamiltonian()
     # obj.test(Parameter)
     # print(np.round(ev-ev[0],3))
-    def opt(Para):
-        loss = Optimization('Er3+', Stevens_idx, alpha, beta, gamma, Para, temp, field,true_eigenvalue,true_intensity).cma_loss_single()
-        return loss
 
-#%%#############################
-# 	  The main algorithm
-################################
+    def opt(Para):
+        '''The optimization requires defining a function to have Parameter(Para) as sole input'''
+        return Optimization('Er3+', Stevens_idx, alpha, beta, gamma, Para, temp, field,true_eigenvalue,true_intensity).cma_loss_single()
+
+#%%##############################################
+# 	  The main algorithm with parallel capability
+#     To parallel this on multi-core cpu:
+#        1. Open a python console such as Anaconda Prompt
+#        2. Use cd "Path" to navigate to the code folder
+#        3. Type mpiexec -n numprocs python -m mpi4py pyfile
+#################################################
 
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
