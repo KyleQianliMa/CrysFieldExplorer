@@ -22,6 +22,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.ticker import ScalarFormatter
 import Operators as op
 import CrysFieldExplorer as crs
+import cma
 
 class Optimization(crs.CrysFieldExplorer):
     def __init__(self, Magnetic_ion, Stevens_idx, alpha, beta, gamma, Parameter, temperature, field, true_eigenvalue, true_intensity):
@@ -38,20 +39,18 @@ class Optimization(crs.CrysFieldExplorer):
         super().__init__(Magnetic_ion, Stevens_idx, alpha, beta, gamma, Parameter, temperature, field)
 
         
-    @staticmethod
-    def test(Parameters):
-        x_norm=np.zeros(len(Parameters))
-        for index,key in enumerate(Parameters):
-            x_norm[index]=Parameters[key]
-        print(x_norm)
+    def test(self):
+        print(self.Parameter)
         
-    def cma_loss_single(self,Parameters):
+    
+    def test_class(self, Parameters):
+        Optimization.Parameter=Parameters 
+        ev,ef,H=super().Hamiltonian()
+        return ev,ef,H
+    
+    
+    def cma_loss_single(self):
         # global true_eigenvalue1, true_intensity1, bound, print_flag, true_T, true_X
-        
-        #parsing parameters
-        x_norm=np.zeros(len(Parameters))
-        for index,key in enumerate(Parameters):
-            x_norm[index]=Parameters[key]
         
         #calculate Hamiltonian and ev, ef, H
         sol = super().Hamiltonian()
@@ -60,7 +59,7 @@ class Optimization(crs.CrysFieldExplorer):
         Jy   =super().Jy()
         Jz   =super().Jz
         dim  =len(Jx)
-        J    =(dim-1)/2
+        J    =self.J
         
         eigenvalues  = sol[0]
         Eigenvectors = sol[1]
@@ -100,6 +99,7 @@ class Optimization(crs.CrysFieldExplorer):
         total_loss = loss
         
         return total_loss
+
 #%%
 if __name__=="__main__":
     alpha=0.01*10.0*4/(45*35)
@@ -110,26 +110,30 @@ if __name__=="__main__":
     Parameter=dict()
     temp=5
     field=0
-    j=0
-    for i in Stevens_idx:
-        Parameter.update({f'{i[0]}{i[1]}':test[j][0]})
-        j+=1
     
-    Parameter['22']=10*Parameter['22']
-    Parameter['41']=0.1*Parameter['41']
-    Parameter['43']=10*Parameter['43']
-    Parameter['61']=0.1*Parameter['61']
-    Parameter['63']=10*Parameter['63']
-    Parameter['65']=10*Parameter['65']
-    Parameter['66']=10*Parameter['66']
+    Para=np.zeros(15)
+    for i in range(15):
+        Para[i]=test[i][0]
+        
+    Para[2]=10*Para[2] #22 -2
+    Para[4]=0.1*Para[4] #41 - 4
+    Para[6]=10*Para[6]  #43 -6
+    Para[9]=0.1*Para[9] #61 -9
+    Para[11]=10*Para[11] #63 -11
+    Para[13]=10*Para[13] #65 -13
+    Para[14]=10*Para[14] #66 -14
     
     true_eigenvalue = np.array([1.77, 5.25, 7.17,  13.72, 22.58, 27.81, 49.24]) #type in experiment measured values
     true_intensity  = np.array([   1.00,0.365,0.000,0.167,0.074,0.027,0.010])
-    obj=Optimization('Er3+', Stevens_idx, alpha, beta, gamma, Parameter, temp, field,true_eigenvalue,true_intensity)
-    ev,_,_=obj.Hamiltonian()
-    obj.test(Parameter)
-    print(np.round(ev-ev[0],3))
-    obj.cma_loss_single(Parameter)
+    # true_X=np.array([0.059169, 0.054744, 0.050943, 0.047583, 0.044683, 0.041926, 0.039777])
+    obj=Optimization('Er3+', Stevens_idx, alpha, beta, gamma, Para, temp, field,true_eigenvalue,true_intensity)
+    # ev,_,_=obj.Hamiltonian()
+    # obj.test(Parameter)
+    # print(np.round(ev-ev[0],3))
+    def opt(Para):
+        loss = Optimization('Er3+', Stevens_idx, alpha, beta, gamma, Para, temp, field,true_eigenvalue,true_intensity).cma_loss_single()
+        return loss
+
 #%%#############################
 # 	  The main algorithm
 ################################
@@ -161,9 +165,7 @@ if __name__=="__main__":
     bound[:,14]  = [-1, 1]
     bound = bound * 100.0
     
-    ntry = 30
-    
-    true_X=np.array([0.059169, 0.054744, 0.050943, 0.047583, 0.044683, 0.041926, 0.039777])
+    ntry = 1
     
     final_result = np.zeros((ntry, par_dim+2))
     comm.Barrier()
@@ -182,7 +184,7 @@ if __name__=="__main__":
         min_bound = - max_bound
         bnds = (min_bound, max_bound)
         bnds = (bound[0,:], bound[1,:])
-        res = cma.fmin(loss_func_single, x_init, 1e-7, options={'maxfevals': 10000000, 'tolfacupx': 1e9}, args=(), gradf=None, \
+        res = cma.fmin(opt, x_init, 1e-7, options={'maxfevals': 10000000, 'tolfacupx': 1e9}, args=(), gradf=None, \
     		    restarts=1, restart_from_best=True, incpopsize=1, eval_initial_x=True, \
     		     parallel_objective=None, noise_handler=None, noise_change_sigma_exponent=1, \
     		     noise_kappa_exponent=0, bipop=True, callback=None)
