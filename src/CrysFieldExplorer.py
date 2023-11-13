@@ -42,17 +42,43 @@ class CrysFieldExplorer(op.Stevens_Operator,op.Quantum_Operator):
         self.T=temperature
         self.field=field
         super().__init__(Magnetic_ion)
-
+    
     def Hamiltonian(self):
         O=super().Stevens_hash(self.Stevens_idx) 
         H=0
+        j=0
         for i in O:
             if i[0] == '2':
-                H+=self.alpha*self.Parameter[i]*O[i]
+                H+=self.alpha*self.Parameter[j]*O[i]
             elif i[0] == '4':            
-                H+=self.beta*self.Parameter[i]*O[i]
+                H+=self.beta*self.Parameter[j]*O[i]
             elif i[0] == '6':            
-                H+=self.gamma*self.Parameter[i]*O[i]                
+                H+=self.gamma*self.Parameter[j]*O[i]   
+            j+=1
+        eigenvalues, eigenvectors=np.linalg.eigh(H)
+        eigenvalues=np.sort(eigenvalues)
+        eigenvectors=eigenvectors[:,np.argsort(eigenvalues)]
+        return eigenvalues, eigenvectors, H
+    
+    @classmethod
+    def Hamiltonian_scale(cls,Magnetic_ion, Stevens_idx, alpha, beta, gamma, Parameter,scale, temperature, field):
+        newobj=CrysFieldExplorer(Magnetic_ion, Stevens_idx, alpha, beta, gamma, Parameter, temperature, field)
+        O=newobj.Stevens_hash(Stevens_idx)
+        #fitting is an art. Scale O matrix such that parameters are mostly in the same magnitude
+        j=0
+        for i in O:
+            O[i]=O[i]*scale[j]
+        
+        H=0
+        j=0
+        for i in O:
+            if i[0] == '2':
+                H+=alpha*Parameter[j]*O[i]
+            elif i[0] == '4':            
+                H+=beta*Parameter[j]*O[i]
+            elif i[0] == '6':            
+                H+=gamma*Parameter[j]*O[i]   
+            j+=1
         eigenvalues, eigenvectors=np.linalg.eigh(H)
         eigenvalues=np.sort(eigenvalues)
         eigenvectors=eigenvectors[:,np.argsort(eigenvalues)]
@@ -241,29 +267,31 @@ if __name__ == "__main__":
     Stevens_idx=[[2,0],[2,1],[2,2],[4,0],[4,1],[4,2],[4,3],[4,4],[6,0],[6,1],[6,2],[6,3],[6,4],[6,5],[6,6]]
     test=pd.read_csv(f'C:/Users/qmc/OneDrive/ONRL/Data/CEF/Python/Eradam/Eradam_MPI_Newfit_goodsolution.csv',header=None)
     Parameter=dict()
-    temp=5
+    temperature=5
     field=0
     j=0
-    for i in Stevens_idx:
-        Parameter.update({f'{i[0]}{i[1]}':test[j][0]})
-        j+=1
-    
-    Parameter['22']=10*Parameter['22']
-    Parameter['41']=0.1*Parameter['41']
-    Parameter['43']=10*Parameter['43']
-    Parameter['61']=0.1*Parameter['61']
-    Parameter['63']=10*Parameter['63']
-    Parameter['65']=10*Parameter['65']
-    Parameter['66']=10*Parameter['66']
-    
-    CEF=CrysFieldExplorer('Er3+',Stevens_idx,alpha,beta,gamma,Parameter,temp,field)
-    ev,ef,H=CEF.Hamiltonian()
-    print(np.round(ev-ev[0],3))
-    Intensity=CEF.Neutron_Intensity(2, 0, True)
-    
-    uti=Utilities('Er3+', Stevens_idx, alpha, beta, gamma, Parameter, temp, field)
-    # T,X=uti.susceptibility_VanVleck()
-    uti.gprime('y')
-    # plt.plot(T,1/X)
-# B20,B21,B22,B40,B41,B42,B43,B44,B60,B61,B62,B63,B64,B65,B66
 
+    Para=np.zeros(15)
+    for i in range(15):
+        Para[i]=test[i][0]
+        
+    Para[2]=10*Para[2] #22 -2
+    Para[4]=0.1*Para[4] #41 - 4
+    Para[6]=10*Para[6]  #43 -6
+    Para[9]=0.1*Para[9] #61 -9
+    Para[11]=10*Para[11] #63 -11
+    Para[13]=10*Para[13] #65 -13
+    Para[14]=10*Para[14] #66 -14
+    
+    CEF=CrysFieldExplorer('Er3+',Stevens_idx,alpha,beta,gamma,Para,temperature,field)
+    ev,ef,H=CEF.Hamiltonian()
+    # print(np.round(ev-ev[0],3))
+    Intensity=CEF.Neutron_Intensity(2, 0, True)
+    # print(Intensity)
+    
+    uti=Utilities('Er3+', Stevens_idx, alpha, beta, gamma, Para, temperature, field)
+    T,X=uti.susceptibility_VanVleck()
+    uti.gprime('y')
+    plt.plot(T,1/X)
+# B20,B21,B22,B40,B41,B42,B43,B44,B60,B61,B62,B63,B64,B65,B66
+    ev1,ef1,H1=CrysFieldExplorer.Hamiltonian_scale('Er3+', Stevens_idx, alpha, beta, gamma, Para, temperature, field)
