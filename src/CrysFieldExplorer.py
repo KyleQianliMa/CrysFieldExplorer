@@ -62,13 +62,13 @@ class CrysFieldExplorer(op.Stevens_Operator,op.Quantum_Operator):
     
     @classmethod
     def Hamiltonian_scale(cls,Magnetic_ion, Stevens_idx, alpha, beta, gamma, Parameter,scale, temperature, field):
-        newobj=CrysFieldExplorer(Magnetic_ion, Stevens_idx, alpha, beta, gamma, Parameter, temperature, field)
+        newobj=cls(Magnetic_ion, Stevens_idx, alpha, beta, gamma, Parameter, temperature, field)
         O=newobj.Stevens_hash(Stevens_idx)
         #fitting is an art. Scale O matrix such that parameters are mostly in the same magnitude
         j=0
         for i in O:
             O[i]=O[i]*scale[j]
-        
+            j+=1
         H=0
         j=0
         for i in O:
@@ -132,6 +132,7 @@ class CrysFieldExplorer(op.Stevens_Operator,op.Quantum_Operator):
             s.update({i:self.tempfac(ev, ev[gs])*self.scattering(ef[:,gs].H,ef[:,i])}) #s:transition probability from ground state gs to excited state. This include the probability from gs to gs
         return s
     
+    
     def Neutron_Intensity(self, N,gs,Kramer):
         '''N is the baseline of intensity we would like to compare'''
         if Kramer == True:
@@ -151,6 +152,47 @@ class CrysFieldExplorer(op.Stevens_Operator,op.Quantum_Operator):
                 S.update({i:(s_degen[i]/total).item()})
             return S
         
+    def Intensity_fast(self,gs): #gs:ground state
+        ev,ef,_=self.Hamiltonian()
+        ef=ef
+        ev=ev-ev[0]
+        s=[]
+        for i in range(gs,int(2*self.J+1)):
+            s.append(self.tempfac(ev, ev[gs])*self.scattering(ef[:,gs].H,ef[:,i])) #s:transition probability from ground state gs to excited state. This include the probability from gs to gs
+        return np.array(s).squeeze()
+    
+    def Neutron_Intensity_fast(self, N,gs): #only use if it's Kramer's ion in this version
+        '''N is the baseline of intensity we would like to compare'''
+        s_degen=[]
+        for i in range(0,len(self.Intensity_fast(gs)),2):
+            s_degen.append((self.Intensity_fast(gs)[i]+self.Intensity_fast(gs)[i+1]).real)
+            # print((self.Intensity_fast(gs)[i]+self.Intensity_fast(gs)[i+1]).item())
+        total=s_degen[N]
+        S=np.zeros(len(s_degen))
+        for i in range(len(s_degen)):
+            S[i]=s_degen[i]/total
+        return S
+    
+    def Intensity_fast_mag(self,gs): #gs:ground state
+        ev,ef,_=self.magsovler()
+        ef=ef
+        ev=ev-ev[0]
+        s=[]
+        for i in range(gs,int(2*self.J+1)):
+            s.append(self.tempfac(ev, ev[gs])*self.scattering(ef[:,gs].H,ef[:,i])) #s:transition probability from ground state gs to excited state. This include the probability from gs to gs
+        return np.array(s).squeeze()
+    
+    def Neutron_Intensity_fast_mag(self, N,gs): #Be careful here as the energy levels now splits
+        '''N is the baseline of intensity we would like to compare'''
+        s_degen=[]
+        for i in range(0,len(self.Intensity_fast(gs)),2):
+            s_degen.append((self.Intensity_fast(gs)[i]+self.Intensity_fast(gs)[i+1]).real)
+            # print((self.Intensity_fast(gs)[i]+self.Intensity_fast(gs)[i+1]).item())
+        total=s_degen[N]
+        S=np.zeros(len(s_degen))
+        for i in range(len(s_degen)):
+            S[i]=s_degen[i]/total
+    
 
 class Utilities(CrysFieldExplorer):
     def __init__(self,Magnetic_ion,Stevens_idx,alpha,beta,gamma,Parameter,temperature,field):
