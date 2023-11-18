@@ -10,6 +10,9 @@ from scipy import optimize
 from scipy.special import wofz
 from scipy import integrate
 import scipy.linalg as LA
+from alive_progress import alive_bar
+from time import sleep
+import Visulization 
 
 class CrysFieldExplorer(op.Stevens_Operator,op.Quantum_Operator):
     '''
@@ -85,13 +88,13 @@ class CrysFieldExplorer(op.Stevens_Operator,op.Quantum_Operator):
         return eigenvalues, eigenvectors, H
     
     # def magH(jx, jy, jz, Bx,By,Bz):
-    def magnetic_Hamiltonian(self):
+    def magnetic_Hamiltonian(self,Bx,By,Bz):
          jx=super().Jx()
          jy=super().Jy()
          jz=super().Jz()
-         Bx=self.field[0]
-         By=self.field[1]
-         Bz=self.field[2]
+         # Bx=self.field[0]
+         # By=self.field[1]
+         # Bz=self.field[2]
          S=self.S;L=self.L;J=self.J
          gj=(J*(J+1) - S*(S+1) + L*(L+1))/(2*J*(J+1)) +(J*(J+1) + S*(S+1) - L*(L+1))/(J*(J+1))
          Na=6.0221409e23
@@ -99,9 +102,9 @@ class CrysFieldExplorer(op.Stevens_Operator,op.Quantum_Operator):
          magH = -gj*muBT*(Bx*jx+By*jy+Bz*jz)
          return magH
      
-    def magsovler(self):
+    def magsovler(self,Bx,By,Bz):
          _,_,H=self.Hamiltonian()
-         magH=self.magnetic_Hamiltonian()
+         magH=self.magnetic_Hamiltonian(Bx,By,Bz)
          Eigenvalues, Eigenvectors = (np.linalg.eigh(H+magH))
          Energy=Eigenvalues-Eigenvalues[0]
          return Energy, Eigenvectors, magH
@@ -193,7 +196,6 @@ class CrysFieldExplorer(op.Stevens_Operator,op.Quantum_Operator):
         for i in range(len(s_degen)):
             S[i]=s_degen[i]/total
     
-
 class Utilities(CrysFieldExplorer):
     def __init__(self,Magnetic_ion,Stevens_idx,alpha,beta,gamma,Parameter,temperature,field):
         super().__init__(Magnetic_ion,Stevens_idx,alpha,beta,gamma,Parameter,temperature,field)
@@ -212,6 +214,70 @@ class Utilities(CrysFieldExplorer):
             else:
                 summation+=(Obs[i]-Exp[i])**2/Exp[i]
         return summation
+    
+    
+    def magnetization(self,T):
+        '''Calculation of powder averaged magnetization from 0.1 to 7.1T with 0.5T step size at temperature T. 
+           This range covers most in-house lab measurement capability'''
+        
+        B=[]
+        Magnetization=[]
+        with alive_bar(14,bar='bubbles') as bar:
+            for k in range(1000,71000,5000):
+                # i=70000
+                Bx=k/10000
+                By=k/10000
+                Bz=k/10000
+                S=self.S;L=self.L;J=self.J
+                gj=(J*(J+1) - S*(S+1) + L*(L+1))/(2*J*(J+1)) +(J*(J+1) + S*(S+1) - L*(L+1))/(J*(J+1))
+                muBT = 5.7883818012e-2
+                k_B = 8.6173303e-2
+                Na=6.0221409e23
+                muB=9.274009994e-21
+                #T=10 #temperature where magnetization is measured
+                M=0
+                sampling=500 #Monte Carlo Sampling size
+                for m in range(0,sampling):
+                    # print(m)
+                    X=np.random.normal(0,1,3)[0]
+                    Y=np.random.normal(0,1,3)[1]
+                    Z=np.random.normal(0,1,3)[2]
+                    norm=np.sqrt(X**2+Y**2+Z**2)
+                    X=X/norm
+                    Y=Y/norm
+                    Z=Z/norm
+                    # mag1=kp.magsovler1(B20,B21,B22,B40,B41,B42,B43,B44,B60,B61,B62,B63,B64,B65,B66,Bx*X,By*Y,Bz*Z)
+                    mag1=super().magsovler(Bx, By, Bz)
+                    E1=mag1[0]
+                    magvec1=mag1[1]
+                    jx=super().Jx()
+                    jy=super().Jy()
+                    jz=super().Jz()
+                    M1x=0
+                    M1y=0
+                    M1z=0
+                    Z1=0
+                    gmubJ=gj*(jx+jy+jz)
+
+                    for n in range(0,16):
+                        Z1=Z1+np.exp(-E1[n]/(k_B*T))
+
+                    for n in range(0,16):
+                        M1x=M1x+((magvec1[:,n].H*(gj*jx)*magvec1[:,n])/Z1)*np.exp(-E1[n]/((k_B*T)))
+                        M1y=M1y+((magvec1[:,n].H*(gj*jy)*magvec1[:,n])/Z1)*np.exp(-E1[n]/((k_B*T)))
+                        M1z=M1z+((magvec1[:,n].H*(gj*jz)*magvec1[:,n])/Z1)*np.exp(-E1[n]/((k_B*T)))
+                        M1x=M1x[0,0].real
+                        M1y=M1y[0,0].real
+                        M1z=M1z[0,0].real
+                    M=M+(M1x*X+M1y*Y+M1z*Z)
+                Magnetization.append(M/sampling)
+                B.append(k/10000)
+                # print(k)
+                sleep(0.03)
+                bar()
+                bar.title('Magnetization')
+        return B, Magnetization
+        
     
     def susceptibility_VanVleck(self):
           ev,ef,H=super().Hamiltonian()  
@@ -310,7 +376,7 @@ if __name__ == "__main__":
     test=pd.read_csv(f'C:/Users/qmc/OneDrive/ONRL/Data/CEF/Python/Eradam/Eradam_MPI_Newfit_goodsolution.csv',header=None)
     Parameter=dict()
     temperature=5
-    field=0
+    field=[0,0,0]
     j=0
 
     Para=np.zeros(15)
@@ -327,13 +393,14 @@ if __name__ == "__main__":
     
     CEF=CrysFieldExplorer('Er3+',Stevens_idx,alpha,beta,gamma,Para,temperature,field)
     ev,ef,H=CEF.Hamiltonian()
-    # print(np.round(ev-ev[0],3))
-    Intensity=CEF.Neutron_Intensity(2, 0, True)
+    print(np.round(ev-ev[0],3))
+    # Intensity=CEF.Neutron_Intensity(2, 0, True)
     # print(Intensity)
     
     uti=Utilities('Er3+', Stevens_idx, alpha, beta, gamma, Para, temperature, field)
-    T,X=uti.susceptibility_VanVleck()
-    uti.gprime('y')
-    plt.plot(T,1/X)
-# B20,B21,B22,B40,B41,B42,B43,B44,B60,B61,B62,B63,B64,B65,B66
-    ev1,ef1,H1=CrysFieldExplorer.Hamiltonian_scale('Er3+', Stevens_idx, alpha, beta, gamma, Para, temperature, field)
+    #plotting
+    plot=Visulization.vis(15,10)
+    plot.susceptibility(uti.susceptibility_VanVleck())
+
+    mag=uti.magnetization(5)
+    plot.magnetization(mag)
