@@ -201,9 +201,9 @@ class Utilities(CrysFieldExplorer):
         super().__init__(Magnetic_ion,Stevens_idx,alpha,beta,gamma,Parameter,temperature,field)
         
     @staticmethod
-    def lorentzian(x,Area,width,x0):
+    def lorentzian(x,Area,width,pos):
         pi=np.pi
-        Y=(Area/pi)*(width/2)/((x-x0)**2+(width/2)**2)
+        Y=(Area/pi)*(width/2)/((x-pos)**2+(width/2)**2)
         return Y
     
     @staticmethod
@@ -215,6 +215,72 @@ class Utilities(CrysFieldExplorer):
                 summation+=(Obs[i]-Exp[i])**2/Exp[i]
         return summation
     
+    
+    def test(self,Bx,By,Bz):
+        return super().magsovler(Bx, By, Bz)
+    
+    def dmdh(self,T):
+        '''Another way to calculate susceptibility by taking differential of dm/dh. 
+           It's good practice to calculate susceptibility this way and compare it with the
+           Van-Vleck method'''
+        k=100
+        Bx=k/10000
+        By=k/10000
+        Bz=k/10000
+        S=self.S;L=self.L;J=self.J
+        gj=(J*(J+1) - S*(S+1) + L*(L+1))/(2*J*(J+1)) +(J*(J+1) + S*(S+1) - L*(L+1))/(J*(J+1))
+        muBT = 5.7883818012e-2
+        k_B = 8.6173303e-2
+        Na=6.0221409e23
+        muB=9.274009994e-21
+        #T=10 #temperature where magnetization is measured
+        M=0
+        sampling=1000
+        for m in range(0,sampling):
+            X=np.random.normal(0,1,3)[0]
+            Y=np.random.normal(0,1,3)[1]
+            Z=np.random.normal(0,1,3)[2]
+            norm=np.sqrt(X**2+Y**2+Z**2)
+            X=X/norm
+            Y=Y/norm
+            Z=Z/norm
+            mag1=super().magsovler(Bx*X, By*Y, Bz*Y)
+            E1=mag1[0]
+            magvec1=mag1[1]
+            jx=super().Jx()
+            jy=super().Jy()
+            jz=super().Jz()
+            M1x=0
+            M1y=0
+            M1z=0
+            Z1=0
+
+            for n in range(0,16):
+                Z1=Z1+np.exp(-E1[n]/(k_B*T))
+
+            for n in range(0,16):
+                M1x=M1x+((magvec1[:,n].H*(gj*jx)*magvec1[:,n])/Z1)*np.exp(-E1[n]/((k_B*T)))
+                M1y=M1y+((magvec1[:,n].H*(gj*jy)*magvec1[:,n])/Z1)*np.exp(-E1[n]/((k_B*T)))
+                M1z=M1z+((magvec1[:,n].H*(gj*jz)*magvec1[:,n])/Z1)*np.exp(-E1[n]/((k_B*T)))
+                M1x=M1x[0,0].real
+                M1y=M1y[0,0].real
+                M1z=M1z[0,0].real
+            M=M+(M1x*X+M1y*Y+M1z*Z)
+            MB=Na*muB*M/Bx/sampling/10000
+        return MB
+    
+    def susceptibility_dmdh(self, T_ini, T_final, step):
+        temp=[]
+        chi=[]
+        with alive_bar((T_final-T_ini)//step) as bar:
+            for T in range(T_ini,T_final,step):
+                X=self.dmdh(T)
+                temp.append(T)
+                chi.append(X)
+                bar.title('Calculating dM/dH')
+                bar()
+        temp=np.array(temp)
+        chi=np.array(chi)
     
     def magnetization(self,T):
         '''Calculation of powder averaged magnetization from 0.1 to 7.1T with 0.5T step size at temperature T. 
@@ -247,8 +313,9 @@ class Utilities(CrysFieldExplorer):
                     Y=Y/norm
                     Z=Z/norm
                     # mag1=kp.magsovler1(B20,B21,B22,B40,B41,B42,B43,B44,B60,B61,B62,B63,B64,B65,B66,Bx*X,By*Y,Bz*Z)
-                    mag1=super().magsovler(Bx, By, Bz)
+                    mag1=super().magsovler(Bx*X, By*Y, Bz*Y)
                     E1=mag1[0]
+                    # print(E1)
                     magvec1=mag1[1]
                     jx=super().Jx()
                     jy=super().Jy()
@@ -394,13 +461,19 @@ if __name__ == "__main__":
     CEF=CrysFieldExplorer('Er3+',Stevens_idx,alpha,beta,gamma,Para,temperature,field)
     ev,ef,H=CEF.Hamiltonian()
     print(np.round(ev-ev[0],3))
+    
     # Intensity=CEF.Neutron_Intensity(2, 0, True)
+    Intensity=CEF.Intensity_fast(0)
     # print(Intensity)
     
     uti=Utilities('Er3+', Stevens_idx, alpha, beta, gamma, Para, temperature, field)
+    ev1,_,_=uti.test(1, 3, 1)
+    print(np.round(ev1-ev1[0],3))
     #plotting
     plot=Visulization.vis(15,10)
     plot.susceptibility(uti.susceptibility_VanVleck())
 
     mag=uti.magnetization(5)
     plot.magnetization(mag)
+    
+    plot.neutron_spectrum(ev-ev[0], Intensity, 0.5)
