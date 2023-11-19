@@ -39,4 +39,18 @@ class vis:
         plt.xticks(fontsize=self.font_size)
         plt.ylabel('Magnetization (\mu_B)',fontsize=self.font_size)
         plt.yticks(fontsize=self.font_size)
+        plt.title('Magneization')
+        plt.show()
+    
+    def neutron_spectrum(self, E, I, resolution):
+        x_E=np.linspace(0.8*min(E),1.2*max(E),100)
+        y_I=0
+        width=resolution
+        for i in range(len(E)):
+            y_I+=crs.Utilities.lorentzian(x_E, I[i], width, E[i])
+        plt.plot(x_E,y_I)
+        plt.xlabel('Energy (meV)',fontsize=self.font_size)
+        plt.ylabel('Intensity (arb.unit)',fontsize=self.font_size)
+        plt.title('Neutron Spectrum')
+        
         plt.show()
