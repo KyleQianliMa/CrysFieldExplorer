@@ -72,6 +72,7 @@ class CrysFieldExplorer(op.Stevens_Operator,op.Quantum_Operator):
         for i in O:
             O[i]=O[i]*scale[j]
             j+=1
+            print(j,i)
         H=0
         j=0
         for i in O:
@@ -197,6 +198,9 @@ class CrysFieldExplorer(op.Stevens_Operator,op.Quantum_Operator):
             S[i]=s_degen[i]/total
     
 class Utilities(CrysFieldExplorer):
+    '''This class contains functions to cacluate loss, construct neutron spectrum, magnetization, susceptibility
+       and other common functions needed in CrysFieldExplore in both optimization and visulization module'''
+       
     def __init__(self,Magnetic_ion,Stevens_idx,alpha,beta,gamma,Parameter,temperature,field):
         super().__init__(Magnetic_ion,Stevens_idx,alpha,beta,gamma,Parameter,temperature,field)
         
@@ -440,6 +444,7 @@ if __name__ == "__main__":
     beta=0.01*100.0*2/(11*15*273)
     gamma=0.01*10.0*8/(13**2*11**2*3**3*7)
     Stevens_idx=[[2,0],[2,1],[2,2],[4,0],[4,1],[4,2],[4,3],[4,4],[6,0],[6,1],[6,2],[6,3],[6,4],[6,5],[6,6]]
+    scale      = [ 1  ,  1  ,  1  ,  1  ,  1  ,  1  ,  1  ,  1  ,  1  ,  1  ,  1  ,  1  ,  1  ,  1  ,  1 ]
     test=pd.read_csv(f'C:/Users/qmc/OneDrive/ONRL/Data/CEF/Python/Eradam/Eradam_MPI_Newfit_goodsolution.csv',header=None)
     Parameter=dict()
     temperature=5
@@ -460,6 +465,8 @@ if __name__ == "__main__":
     
     CEF=CrysFieldExplorer('Er3+',Stevens_idx,alpha,beta,gamma,Para,temperature,field)
     ev,ef,H=CEF.Hamiltonian()
+    #classmethod here doesn't associate Hamiltonian_scale to any instance so we doesn't need to create another instance to change scale
+    # ev,ef,H=CrysFieldExplorer.Hamiltonian_scale('Er3+', Stevens_idx, alpha, beta, gamma, Para, scale, temperature, field)
     print(np.round(ev-ev[0],3))
     
     # Intensity=CEF.Neutron_Intensity(2, 0, True)
