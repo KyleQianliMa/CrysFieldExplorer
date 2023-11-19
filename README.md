@@ -1,6 +1,9 @@
 # CrysFieldExplorer
 CrysFieldExplorer is a fast-converging Python package for optimizing crystal field parameters.
 
+It supports calculation of a list of common rare earth ions. The program consists of three major modules: CrysfieldExplorer(main), Optimization and Visulization. Detailed tutorials will be uploaded soon.
+
+
 The novalty of CrysFieldExplorer is it adopts a new loss function using theory of characteristic polynomials. By adopting this loss function it can globaly optimize the CEF hamiltonian with Neutron + any other experimental data and does not rely much on accurate starting value, which is usually estimated from point charge models.
 
 A comparsion of the new Spectrum-Characteristic loss ($L_{spectrum}$) and traditional $\chi^2$ loss has been displayed below.
