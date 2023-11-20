@@ -4,7 +4,7 @@ import pandas as pd
 import pdb
 
 print('-'*55 + '\n'+
-    '|                CrysFieldExplorer 1.0.1              |\n' +
+    '|                CrysFieldExplorer 1.0.0              |\n' +
     '|   A program for fast optimization of CEF Parameters |\n' +
     '|   -Developed by Kyle Ma                             |\n' +
     '|   Please cite  J. Appl. Cryst. (2023). 56, 1229-124 |\n' +
