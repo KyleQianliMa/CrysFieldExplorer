@@ -1,3 +1,3 @@
-This folder contains examples of how to use CrysFieldExplore.
+This folder contains legacy code that inspired CrysFieldExplorer.
 
-Currently the code  is still in its raw function form. Working to update them to easy-to-ready Jupyter notebook format.
+Codes in this folder will be re-organized into Jupyter notebook format as examples in the future.
