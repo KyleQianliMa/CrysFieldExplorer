@@ -13,6 +13,6 @@ setuptools.setup(
     install_requires=['matplotlib',
                       'scipy',
                       'cma', 'numpy' ,
-                      'pyswarm'
+                      'pyswarm','mpi4py'
                       ],
 )
