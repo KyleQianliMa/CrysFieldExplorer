@@ -8,10 +8,9 @@ Created on Sat Nov 18 13:06:05 2023
 import numpy as np
 from numpy import sqrt
 import pandas as pd
-import pdb
 import matplotlib.pyplot as plt
-import Operators as op
-import CrysFieldExplorer as crs
+import CrysFieldExplorer.Operators as op
+import CrysFieldExplorer.CrysFieldExplorer as crs
 import sympy as sym
 from sympy import symbols, solve,cos,sin,Matrix, Inverse
 from scipy import optimize

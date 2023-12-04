@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: CrysFieldExplorer
-Version: 1.0.0
+Version: 1.0.8
 Summary: Fast optimization of CEF Hamiltonian
 Home-page: https://github.com/KyleQianliMa/CrysFieldExplorer
 Author: Kye Ma
@@ -12,7 +12,7 @@ Requires-Dist: scipy
 Requires-Dist: cma
 Requires-Dist: numpy
 Requires-Dist: pyswarm
-Requires-Dist: mpi4pyalive_progress
-Requires-Dist: pdb
+Requires-Dist: mpi4py
 Requires-Dist: sympy
 Requires-Dist: scipy
+Requires-Dist: alive_progress

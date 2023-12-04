@@ -1,9 +1,8 @@
 import numpy as np
 from numpy import sqrt
 import pandas as pd
-import pdb
 import matplotlib.pyplot as plt
-import Operators as op
+import CrysFieldExplorer.Operators as op
 import sympy as sym
 from sympy import symbols, solve,cos,sin,Matrix, Inverse
 from scipy import optimize
@@ -12,7 +11,7 @@ from scipy import integrate
 import scipy.linalg as LA
 from alive_progress import alive_bar
 from time import sleep
-import Visulization 
+import CrysFieldExplorer.Visulization as Visulization
 
 class CrysFieldExplorer(op.Stevens_Operator,op.Quantum_Operator):
     '''

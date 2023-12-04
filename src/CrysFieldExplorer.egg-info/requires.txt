@@ -3,7 +3,7 @@ scipy
 cma
 numpy
 pyswarm
-mpi4pyalive_progress
-pdb
+mpi4py
 sympy
 scipy
+alive_progress

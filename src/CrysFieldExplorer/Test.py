@@ -21,8 +21,8 @@ import scipy.linalg as LA
 from mpi4py import MPI
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.ticker import ScalarFormatter
-import Operators as op
-import CrysFieldExplorer as crs
+import CrysFieldExplorer.Operators as op
+import CrysFieldExplorer.CrysFieldExplorer as crs
 import cma
 import unittest
 import math

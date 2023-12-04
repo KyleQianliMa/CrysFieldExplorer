@@ -2,6 +2,11 @@ LICENSE
 README.md
 pyproject.toml
 setup.py
+src/CrysFieldExplorer/CrysFieldExplorer.py
+src/CrysFieldExplorer/Operators.py
+src/CrysFieldExplorer/Test.py
+src/CrysFieldExplorer/Visulization.py
+src/CrysFieldExplorer/__init__.py
 src/CrysFieldExplorer.egg-info/PKG-INFO
 src/CrysFieldExplorer.egg-info/SOURCES.txt
 src/CrysFieldExplorer.egg-info/dependency_links.txt
