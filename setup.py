@@ -14,5 +14,9 @@ setuptools.setup(
                       'scipy',
                       'cma', 'numpy' ,
                       'pyswarm','mpi4py'
+                      'alive_progress',
+                      'pdb',
+                      'sympy',
+                      'scipy',                      
                       ],
 )

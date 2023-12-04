@@ -1,4 +1,9 @@
 # CrysFieldExplorer
+
+1.0.0 version is released. To install:
+
+```pip install CrysFieldExplorer```
+
 CrysFieldExplorer is a fast-converging Python package for optimizing crystal field parameters.
 
 It supports calculation of a list of common rare earth ions. The program consists of three major modules: CrysfieldExplorer(main), Optimization and Visulization. Detailed tutorials will be uploaded soon.

@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: CrysFieldExplorer
+Version: 1.0.0
+Summary: Fast optimization of CEF Hamiltonian
+Home-page: https://github.com/KyleQianliMa/CrysFieldExplorer
+Author: Kye Ma
+Author-email: maq1@ornl.gov
+License: MIT License
+License-File: LICENSE
+Requires-Dist: matplotlib
+Requires-Dist: scipy
+Requires-Dist: cma
+Requires-Dist: numpy
+Requires-Dist: pyswarm
+Requires-Dist: mpi4pyalive_progress
+Requires-Dist: pdb
+Requires-Dist: sympy
+Requires-Dist: scipy
