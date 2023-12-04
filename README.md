@@ -5,9 +5,9 @@
 ```pip install CrysFieldExplorer```
 
 Import the main modules use:
-'''from CrysFieldExplorer import CrysFieldExplorer as crs'''
-'''from CrysFieldExplorer import Optimization as opt'''
-'''from CrysFieldExplorer import Visulization'''
+```from CrysFieldExplorer import CrysFieldExplorer as crs```
+```from CrysFieldExplorer import Optimization as opt```
+```from CrysFieldExplorer import Visulization```
 
 CrysFieldExplorer is a fast-converging Python package for optimizing crystal field parameters.
 
