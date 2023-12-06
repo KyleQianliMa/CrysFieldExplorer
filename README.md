@@ -4,7 +4,7 @@
 
 ```pip install CrysFieldExplorer```
 
-Import the main modules use:
+Import the main modules:
 
 ```from CrysFieldExplorer import CrysFieldExplorer as crs```
 
