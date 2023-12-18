@@ -303,6 +303,7 @@ class Utilities(CrysFieldExplorer):
                 k_B = 8.6173303e-2
                 Na=6.0221409e23
                 muB=9.274009994e-21
+                dim=int(2*self.J+1)
                 #T=10 #temperature where magnetization is measured
                 M=0
                 sampling=500 #Monte Carlo Sampling size
@@ -329,10 +330,10 @@ class Utilities(CrysFieldExplorer):
                     Z1=0
                     gmubJ=gj*(jx+jy+jz)
 
-                    for n in range(0,16):
+                    for n in range(0,dim):
                         Z1=Z1+np.exp(-E1[n]/(k_B*T))
 
-                    for n in range(0,16):
+                    for n in range(0,dim):
                         M1x=M1x+((magvec1[:,n].H*(gj*jx)*magvec1[:,n])/Z1)*np.exp(-E1[n]/((k_B*T)))
                         M1y=M1y+((magvec1[:,n].H*(gj*jy)*magvec1[:,n])/Z1)*np.exp(-E1[n]/((k_B*T)))
                         M1z=M1z+((magvec1[:,n].H*(gj*jz)*magvec1[:,n])/Z1)*np.exp(-E1[n]/((k_B*T)))
