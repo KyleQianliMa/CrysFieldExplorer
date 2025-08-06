@@ -1,5 +1,12 @@
 # CrysFieldExplorer
 
+Papers that used CrysFieldExplorer:
+1. Magnetic properties of the quasi-XY Shastry-Sutherland magnet Er2⁢Be2⁢SiO7 (https://journals.aps.org/prmaterials/abstract/10.1103/PhysRevMaterials.8.094001).
+2. Quantum entanglement of XY-type spin dimers in Shastry-Sutherland lattice (https://arxiv.org/abs/2412.17913).
+3. Crystal field splittings and magnetic ground state of the square-lattice antiferromagnets YbBi2⁢ClO4 and YbBi2⁢IO4 with 𝐽eff=1/2 (https://journals.aps.org/prb/abstract/10.1103/PhysRevB.111.104430).
+
+Please reach out at maq1@ornl.gov for collaborations. I would be happy to help on new systems.
+
 1.0 version is released. To install:
 
 ```pip install CrysFieldExplorer```
@@ -40,4 +47,5 @@ From these solutions it can produce excellent agreement between physical measure
 
 
 ![alt text](images/Yb2Ti2O7_comparsion.png)
+
 
